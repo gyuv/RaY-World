@@ -157,29 +157,57 @@ body {
   }
 }
 
-/* Intro-splash keyframes (referenced via arbitrary/inline animations). */
-@keyframes intro-rays {
+/* ---- Netflix-style intro keyframes (referenced via inline animations) ---- */
+
+/* Light strands rise from below, shimmer, then get pulled up and out. */
+@keyframes nf-strand {
   0% {
     opacity: 0;
-    transform: scale(0.6) rotate(var(--r, 0deg));
+    transform: translateY(115%) scaleY(1.5);
   }
-  40% {
-    opacity: 0.9;
+  25% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(0) scaleY(1);
+    opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: scale(1.6) rotate(var(--r, 0deg));
+    transform: translateY(-25%) scaleY(0.6);
   }
 }
-@keyframes intro-mark {
+
+/* The "ta-dum" flash burst that reveals the mark. */
+@keyframes nf-flash {
   0% {
     opacity: 0;
     transform: scale(0.4);
-    filter: blur(12px);
   }
-  45% {
+  55% {
+    opacity: 0;
+  }
+  70% {
+    opacity: 0.95;
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+/* Mark pops in on the flash, then settles. */
+@keyframes nf-mark {
+  0%,
+  55% {
+    opacity: 0;
+    transform: scale(0.35);
+    filter: blur(14px);
+  }
+  72% {
     opacity: 1;
-    transform: scale(1.06);
+    transform: scale(1.1);
     filter: blur(0);
   }
   100% {
@@ -187,6 +215,17 @@ body {
     transform: scale(1);
   }
 }
+
+/* Final zoom into the mark before the overlay fades to the app. */
+@keyframes nf-zoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.35);
+  }
+}
+
 @keyframes intro-word {
   0% {
     opacity: 0;
