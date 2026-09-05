@@ -89,6 +89,18 @@ export interface Season {
   overview?: string;
 }
 
+/**
+ * A playable stream for a title/episode, resolved from a source you are
+ * licensed to serve. `kind` tells the player how to render it:
+ *  - "file"  : a direct MP4/WebM URL   -> <video src>
+ *  - "hls"   : an HLS manifest (.m3u8) -> <video> (native on Safari; hls.js elsewhere)
+ *  - "embed" : a licensed provider player URL -> <iframe>
+ */
+export interface StreamSource {
+  url: string;
+  kind: "file" | "hls" | "embed";
+}
+
 /** Full detail record for a movie. */
 export interface MovieDetail extends MediaItem {
   type: "movie";
