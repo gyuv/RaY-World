@@ -5,7 +5,10 @@
  * response shapes. This is the seam that lets additional providers be added
  * later without rewriting the UI.
  */
-
+export interface StreamSource {
+  url: string;
+  kind: "hls" | "file" | "embed";
+}
 export type MediaType = "movie" | "tv" | "person";
 
 /** A single movie or TV entry, normalized. */
