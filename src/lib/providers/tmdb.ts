@@ -367,12 +367,22 @@ class TmdbProvider implements MediaProvider {
       options.genreId ??
       (options.genreSlug ? getGenreId(options.genreSlug, type) : undefined);
 
+    // Vote-count floor is sort-aware: recent releases have few/zero votes, so
+    // "latest"/"oldest" must NOT require votes or new releases vanish. Top-rated
+    // needs a real sample to be meaningful; everything else uses a light floor.
+    const voteFloor =
+      options.sort === "top_rated"
+        ? 100
+        : options.sort === "latest" || options.sort === "oldest"
+          ? 0
+          : 10;
+
     const params: Record<string, string | number | undefined> = {
       with_original_language: options.language,
       with_genres: genreId,
       sort_by: sortToTmdb(options.sort, type),
       page: options.page ?? 1,
-      "vote_count.gte": options.sort === "top_rated" ? 100 : 20,
+      "vote_count.gte": voteFloor,
     };
 
     if (options.minRating) params["vote_average.gte"] = options.minRating;
@@ -385,6 +395,13 @@ class TmdbProvider implements MediaProvider {
     }
     if (options.yearFrom) params[`${dateField}.gte`] = `${options.yearFrom}-01-01`;
     if (options.yearTo) params[`${dateField}.lte`] = `${options.yearTo}-12-31`;
+
+    // For "latest", cap at today so we surface actual recent releases, not
+    // announced-but-unreleased future titles.
+    if (options.sort === "latest") {
+      const today = new Date().toISOString().slice(0, 10);
+      params[`${dateField}.lte`] = today;
+    }
 
     const raw = await tmdbFetch<RawPaginated<RawMovie>>(`/discover/${type}`, {
       params,
@@ -416,15 +433,8 @@ class TmdbProvider implements MediaProvider {
 
   getLatest(options: FeedOptions): Promise<Paginated<MediaItem>> {
     // "Latest" = most recent releases up to today, sorted newest first.
-    const today = new Date().toISOString().slice(0, 10);
-    const dateField =
-      options.type === "movie" ? "primary_release_date" : "first_air_date";
-    return this.discover({
-      ...options,
-      sort: "latest",
-      // Exclude far-future items so "latest" means released, not announced.
-      yearTo: Number(today.slice(0, 4)),
-    });
+    // The date cap and zero vote-floor are applied inside discover().
+    return this.discover({ ...options, sort: "latest" });
   }
 }
 

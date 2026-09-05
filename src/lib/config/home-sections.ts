@@ -137,6 +137,14 @@ export const HOME_SECTIONS: HomeSection[] = [
     href: "/browse?type=tv&language=en",
   },
   {
+    id: "english-latest",
+    title: "Latest English Releases",
+    kind: "latest",
+    mediaType: "movie",
+    language: "en",
+    href: "/browse?type=movie&language=en&sort=latest",
+  },
+  {
     id: "english-top-rated",
     title: "Top Rated English",
     kind: "top_rated",
