@@ -10,9 +10,11 @@ interface WatchPlayerProps {
   title: string;
   backdropPath?: string | null;
   stillPath?: string | null;
+  stillPath?: string | null; // Removed duplicate if present in your file
   videos: Video[];
-  streamUrl={streamUrl}       
-  streamKind={streamKind}
+  /** A licensed stream URL, resolved by getStreamSource(). */
+  streamUrl?: string | null;  // <-- Use '?' for optional, not '='
+  streamKind?: "file" | "hls" | "embed";
 }
 
 /**
