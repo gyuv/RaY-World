@@ -9,9 +9,8 @@ import { PlayIcon, CloseIcon } from "@/components/icons";
 interface WatchPlayerProps {
   title: string;
   backdropPath?: string | null;
-  stillPath?: string | null;
+  stillPath?: string | null; // Keep only ONE of these
   videos: Video[];
-  /** A licensed stream URL, resolved by getStreamSource(). */
   streamUrl?: string | null;
   streamKind?: "file" | "hls" | "embed";
 }
