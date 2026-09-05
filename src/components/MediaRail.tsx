@@ -87,7 +87,7 @@ export function MediaRail({
         {items.map((item, i) => (
           <div
             key={`${item.type}:${item.id}`}
-            className="w-[38vw] flex-none snap-start sm:w-[180px] lg:w-[190px]"
+            className="w-[38vw] flex-none snap-start sm:w-[180px] lg:w-[190px] tv:w-[240px]"
           >
             <MediaCard item={item} priority={priority && i < 5} />
           </div>
