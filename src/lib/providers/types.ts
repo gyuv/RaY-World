@@ -210,7 +210,3 @@ export class ProviderError extends Error {
     this.name = "ProviderError";
   }
 }
-export interface StreamSource {
-  url: string;
-  kind: "hls" | "file" | "embed";
-}
