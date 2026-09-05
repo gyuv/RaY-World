@@ -11,9 +11,8 @@ interface WatchPlayerProps {
   backdropPath?: string | null;
   stillPath?: string | null;
   videos: Video[];
-  /** A licensed stream URL, resolved by getStreamSource(). */
-  streamUrl?: string | null;
-  streamKind?: "file" | "hls" | "embed";
+  streamUrl={streamUrl}       
+  streamKind={streamKind}
 }
 
 /**
