@@ -1,10 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
 import { backdropUrl, stillUrl } from "@/lib/images";
 import { StreamSource, Video } from "@/lib/providers/types";
-import { PlayIcon, CloseIcon } from "@/components/icons";
 import { VideoEmbed } from "./VideoEmbed";
 
 interface WatchPlayerProps {
@@ -12,93 +9,36 @@ interface WatchPlayerProps {
   backdropPath?: string | null;
   stillPath?: string | null;
   videos: Video[];
-  /** A licensed stream resolved by getStreamSource(); null falls back to trailer. */
-  source?: StreamSource | null;
+  /** Licensed servers resolved by getStreamSources(). */
+  servers?: StreamSource[];
 }
 
 /**
- * Cinematic player shell. It owns the poster / play / close UI only — the
- * actual stream rendering lives in <VideoEmbed>, so future streaming changes
- * touch that component (and src/lib/stream.ts), never this file or the page.
- *
- * Playback priority: a licensed `source`, else the authorized YouTube trailer
- * preview, else a "connect a source" state. Never scrapes or proxies
- * unauthorized streaming sources (spec §23).
+ * Thin shell around the streaming widget. It only computes the poster image and
+ * picks a trailer preview, then hands off to <VideoEmbed>, which owns the player
+ * and the server buttons. Future streaming changes live in VideoEmbed and
+ * src/lib/stream.ts — this file and the watch page stay stable.
  */
 export function WatchPlayer({
   title,
   backdropPath,
   stillPath,
   videos,
-  source,
+  servers = [],
 }: WatchPlayerProps) {
-  const [playing, setPlaying] = useState(false);
-
   const trailer =
     videos.find((v) => v.type === "Trailer" && v.official) ??
     videos.find((v) => v.type === "Trailer") ??
     videos.find((v) => v.type === "Teaser");
 
-  const image = stillUrl(stillPath, "w780") ?? backdropUrl(backdropPath, "w1280");
-  const canPlay = Boolean(source || trailer);
+  const poster = stillUrl(stillPath, "w780") ?? backdropUrl(backdropPath, "w1280");
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black ring-1 ring-white/10">
-      {playing && canPlay ? (
-        <>
-          {source ? (
-            <VideoEmbed source={source} title={title} poster={image} />
-          ) : trailer ? (
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${trailer.key}?autoplay=1&rel=0`}
-              title={`${title} — preview`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="h-full w-full"
-            />
-          ) : null}
-
-          <button
-            onClick={() => setPlaying(false)}
-            aria-label="Close player"
-            className="absolute right-4 top-4 z-20 grid h-9 w-9 place-items-center rounded-full bg-black/60 text-white transition hover:bg-black/80"
-          >
-            <CloseIcon />
-          </button>
-        </>
-      ) : (
-        <>
-          {image ? (
-            <Image
-              src={image}
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover opacity-70"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-ink-800 to-ink-950" />
-          )}
-          <div className="absolute inset-0 bg-ink-950/40" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
-            <button
-              onClick={() => canPlay && setPlaying(true)}
-              disabled={!canPlay}
-              className="grid h-16 w-16 place-items-center rounded-full bg-ray-gradient text-ink-950 shadow-glow transition hover:scale-105 disabled:opacity-50"
-              aria-label={canPlay ? "Play" : "No source available"}
-            >
-              <PlayIcon className="text-2xl" />
-            </button>
-            <p className="max-w-md px-6 text-sm text-white/70">
-              {source
-                ? "Ready to play."
-                : trailer
-                  ? "Playing official preview. Connect a licensed source to stream the full title."
-                  : "Connect a licensed streaming source to play this title."}
-            </p>
-          </div>
-        </>
-      )}
-    </div>
+    <VideoEmbed
+      title={title}
+      poster={poster}
+      servers={servers}
+      trailerKey={trailer?.key ?? null}
+    />
   );
 }

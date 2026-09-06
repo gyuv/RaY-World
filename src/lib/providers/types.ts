@@ -90,13 +90,18 @@ export interface Season {
 }
 
 /**
- * A playable stream for a title/episode, resolved from a source you are
- * licensed to serve. `kind` tells the player how to render it:
+ * A playable stream ("server") for a title/episode, resolved from a source you
+ * are licensed to serve. `kind` tells the player how to render it:
  *  - "file"  : a direct MP4/WebM URL   -> <video src>
  *  - "hls"   : an HLS manifest (.m3u8) -> <video> (native on Safari; hls.js elsewhere)
  *  - "embed" : a licensed provider player URL -> <iframe>
  */
 export interface StreamSource {
+  /** Stable key for the server button, e.g. "server-1". */
+  id: string;
+  /** Button label, e.g. "Server 1". */
+  label: string;
+  /** Playable URL. Empty string = slot not yet configured (button disabled). */
   url: string;
   kind: "file" | "hls" | "embed";
 }

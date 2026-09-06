@@ -5,7 +5,7 @@ import { provider } from "@/lib/providers";
 import { ProviderError, SeriesDetail } from "@/lib/providers/types";
 import { WatchPlayer } from "@/components/watch/WatchPlayer";
 import { HistoryTracker } from "@/components/watch/HistoryTracker";
-import { getStreamSource } from "@/lib/stream";
+import { getStreamSources } from "@/lib/stream";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 import { EmptyState } from "@/components/EmptyState";
@@ -43,7 +43,7 @@ export default async function WatchPage({
     if (type === "movie") {
       const detail = await provider.getMovie(numeric);
       if (!detail) notFound();
-      const stream = await getStreamSource("movie", detail.id);
+      const servers = await getStreamSources("movie", detail.id);
       return (
         <div className="animate-fade-in">
           <HistoryTracker
@@ -60,7 +60,7 @@ export default async function WatchPage({
               title={detail.title}
               backdropPath={detail.backdropPath}
               videos={detail.videos}
-              source={stream}
+              servers={servers}
             />
             <div className="mt-5 flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -139,7 +139,7 @@ async function TvWatch({
     ? episodes.find((e) => e.episodeNumber === current.episodeNumber + 1)
     : undefined;
 
-  const stream = await getStreamSource(
+  const servers = await getStreamSources(
     "tv",
     detail.id,
     seasonNumber,
@@ -168,7 +168,7 @@ async function TvWatch({
           backdropPath={detail.backdropPath}
           stillPath={current?.stillPath}
           videos={detail.videos}
-          source={stream}
+          servers={servers}
         />
 
         <div className="mt-5 flex flex-wrap items-start justify-between gap-4">

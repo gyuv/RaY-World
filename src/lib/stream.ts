@@ -2,26 +2,34 @@
 import { StreamSource } from "@/lib/providers/types";
 
 /**
- * Resolve a playable stream for a title/episode.
+ * Resolve the list of "servers" (playable sources) for a title/episode.
  *
- * This is the single seam where you connect a streaming source you are
- * LICENSED to serve — for example:
- *   - your own hosted files on a CDN (S3/CloudFront, Bunny) -> { kind: "file" }
- *   - a managed streaming provider (Mux, Cloudflare Stream)  -> { kind: "hls" | "embed" }
- *   - an authorized studio/OTT partner player embed          -> { kind: "embed" }
+ * This is the single place you connect sources you are LICENSED to serve —
+ * your own CDN files/HLS, Mux, Cloudflare Stream, or an authorized provider
+ * embed. Fill each server's `url` below; a server with an empty `url` renders
+ * as a disabled button until you configure it.
  *
- * Return `null` when no licensed source is available — the player then falls
- * back to the trailer preview / "connect a source" state.
+ * Do NOT put URLs from unauthorized/pirated streaming sites here — that would
+ * make RaY-World distribute copyrighted content illegally.
  *
- * Do NOT return URLs from unauthorized/pirated streaming sites here. Doing so
- * would make RaY-World distribute copyrighted content illegally.
+ * Example once you have licensed URLs:
+ *   url: `https://stream.yoursite.com/${type}/${id}.m3u8`, kind: "hls"
+ *   url: muxPlaybackUrl,                                    kind: "hls"
+ *   url: authorizedPartnerEmbedUrl,                         kind: "embed"
  */
-export async function getStreamSource(
-  _type: "movie" | "tv",
-  _id: number,
-  _season?: number,
-  _episode?: number,
-): Promise<StreamSource | null> {
-  // No licensed source wired up yet. Plug yours in above and return it here.
-  return null;
+export async function getStreamSources(
+  type: "movie" | "tv",
+  id: number,
+  season?: number,
+  episode?: number,
+): Promise<StreamSource[]> {
+  if (!id) return [];
+
+  // 3 server slots. Set each `url` to a licensed source to enable its button.
+  // `type`, `id`, `season`, `episode` are available to build your URLs.
+  return [
+    { id: "server-1", label: "Server 1", url: "", kind: "embed" },
+    { id: "server-2", label: "Server 2", url: "", kind: "embed" },
+    { id: "server-3", label: "Server 3", url: "", kind: "embed" },
+  ];
 }
