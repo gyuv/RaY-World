@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { IntroSplash } from "@/components/IntroSplash";
+import { SiteGuard } from "@/components/SiteGuard";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ray-world.example"),
@@ -42,6 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen font-sans">
+        <SiteGuard />
         <IntroSplash />
         <a
           href="#main"

@@ -28,8 +28,8 @@ export async function getStreamSources(
   // 3 server slots. Set each `url` to a licensed source to enable its button.
   // `type`, `id`, `season`, `episode` are available to build your URLs.
   return [
-    { id: "server-1", label: "Server 1", url: "", kind: "embed" },
-    { id: "server-2", label: "Server 2", url: "", kind: "embed" },
-    { id: "server-3", label: "Server 3", url: "", kind: "embed" },
+    { id: "server-1", label: "Orange-Server", url: "", kind: "embed" },
+    { id: "server-2", label: "Apple-Server", url: "", kind: "embed" },
+    { id: "server-3", label: "Mango-Server", url: "", kind: "embed" },
   ];
 }
