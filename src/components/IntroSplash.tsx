@@ -139,17 +139,17 @@ export function IntroSplash() {
           <BrandImage
             src="/brand/header.png"
             alt="RAYWORLD — Discover • Watch • Enjoy"
-            className="h-28 w-auto drop-shadow-[0_0_40px_rgba(168,85,247,0.35)] sm:h-36 tv:h-44"
+            className="h-auto w-[86vw] max-w-[520px] drop-shadow-[0_0_50px_rgba(168,85,247,0.4)] sm:max-w-[720px] lg:max-w-[880px] tv:max-w-[1200px]"
             fallback={
               <div className="flex flex-col items-center">
-                <LogoMark size={120} animate rings />
-                <h1 className="mt-6 font-display text-5xl font-black tracking-tight sm:text-7xl">
+                <LogoMark size={140} animate rings />
+                <h1 className="mt-6 font-display text-6xl font-black tracking-tight sm:text-8xl tv:text-9xl">
                   <span className="text-white">RAY</span>
                   <span className="bg-[linear-gradient(120deg,#ec4899,#a855f7)] bg-clip-text text-transparent">
                     WORLD
                   </span>
                 </h1>
-                <p className="mt-4 text-xs uppercase tracking-[0.4em] text-white/50 sm:text-sm">
+                <p className="mt-4 text-sm uppercase tracking-[0.4em] text-white/50 sm:text-base">
                   Discover • Watch • Enjoy
                 </p>
               </div>
