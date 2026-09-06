@@ -1,13 +1,17 @@
 // src/lib/stream.ts
 import { StreamSource } from "@/lib/providers/types";
 
+/**
+ * Resolve the list of "servers" (playable sources) for a title/episode
+ * using the providers (Peachify, 2embed, and Vidsrc) from Code 2.
+ */
 export async function getStreamSources(
   type: "movie" | "tv",
   id: number,
   season?: number,
   episode?: number,
 ): Promise<StreamSource[]> {
- if (!id) return [];
+  if (!id) return [];
 
   // Fallback to season 1, episode 1 if missing for TV shows
   const s = season || 1;
@@ -51,5 +55,4 @@ export async function getStreamSources(
       kind: "embed" 
     },
   ];
-}
 }
