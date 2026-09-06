@@ -6,6 +6,7 @@ import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 import { ContinueWatchingRail } from "@/components/ContinueWatchingRail";
 import { LanguageQuickNav } from "@/components/LanguageQuickNav";
+import { ProvidersStrip } from "@/components/ProvidersStrip";
 
 // Revalidate the homepage feed periodically (spec §19: long cache for feeds).
 export const revalidate = 3600;
@@ -32,6 +33,7 @@ export default async function HomePage() {
       <div className="relative z-10 -mt-6 space-y-2">
         <ContinueWatchingRail />
         <LanguageQuickNav />
+        <ProvidersStrip />
 
         {resolved.map(({ section, items }, i) => (
           <MediaRail

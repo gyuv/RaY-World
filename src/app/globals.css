@@ -237,6 +237,30 @@ body {
   }
 }
 
+/* Seamless marquee for the providers strip (two copies -> shift by half). */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/*
+ * Global keyboard / D-pad focus ring at ALL sizes (not just TV). focus-visible
+ * only triggers for keyboard/remote navigation, so mouse users never see it.
+ */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #ffd75e;
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
 /* Utility for line clamping without the plugin. */
 .line-clamp-2 {
   display: -webkit-box;

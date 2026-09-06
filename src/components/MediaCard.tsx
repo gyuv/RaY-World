@@ -47,7 +47,7 @@ export function MediaCard({ item, className, priority }: MediaCardProps) {
         </div>
 
         {/* Hover overlay */}
-        <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent opacity-0 transition duration-300 group-hover:opacity-100">
+        <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100">
           <div className="flex items-center gap-2 p-3">
             <span className="btn-primary pointer-events-none !px-3 !py-1.5 text-xs">
               <PlayIcon /> Play
