@@ -8,21 +8,7 @@ import { LogoMark } from "@/components/Logo";
 import { BrandImage } from "@/components/BrandImage";
 import { cn } from "@/lib/utils";
 
-/**
- * VideoEmbed — the complete streaming widget and the ONLY place that renders
- * playable streams. Keep all playback/server changes here so the watch page and
- * WatchPlayer stay stable.
- *
- * It shows the player and a row of golden "Server" buttons below it, mapped
- * from `servers` (resolved by src/lib/stream.ts → getStreamSources). A server
- * with an empty `url` is treated as not-yet-configured and its button is
- * disabled. Playback:
- *   kind "embed" -> <iframe>   (licensed provider/partner player URL)
- *   kind "file"  -> <video>    (direct MP4/WebM)
- *   kind "hls"   -> <video>    (.m3u8; native on Safari/iOS — add hls.js here)
- *
- * Only use sources you are LICENSED to serve.
- */
+
 interface VideoEmbedProps {
   title: string;
   poster?: string | null;
@@ -69,6 +55,7 @@ export function VideoEmbed({
                   key={active.id}
                   src={active.url}
                   title={`${title} — ${active.label}`}
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="h-full w-full"
@@ -89,6 +76,7 @@ export function VideoEmbed({
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
                 title={`${title} — preview`}
+                sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="h-full w-full"
@@ -114,7 +102,7 @@ export function VideoEmbed({
               <Image src={poster} alt="" fill sizes="100vw" className="object-cover opacity-70" />
             ) : (
               <div className="absolute inset-0 bg-gradient-to-br from-ink-800 to-ink-950" />
-            )}
+          )}
             <div className="absolute inset-0 bg-ink-950/40" />
             <span className="relative grid h-16 w-16 place-items-center rounded-full bg-ray-gradient text-ink-950 shadow-glow transition group-hover:scale-105 disabled:opacity-50">
               <PlayIcon className="text-2xl" />
@@ -180,6 +168,6 @@ export function VideoEmbed({
           </div>
         </div>
       )}
-    </div>
+  </div>
   );
 }
