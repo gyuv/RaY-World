@@ -28,8 +28,8 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: "/api/icon?size=192",
-    apple: "/api/icon?size=192",
+    icon: [{ url: "/brand/app-icon.png" }, { url: "/api/icon?size=192" }],
+    apple: [{ url: "/brand/app-icon.png" }, { url: "/api/icon?size=192" }],
   },
 };
 

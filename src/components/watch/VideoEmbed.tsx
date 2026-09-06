@@ -5,6 +5,7 @@ import Image from "next/image";
 import { StreamSource } from "@/lib/providers/types";
 import { PlayIcon, CloseIcon } from "@/components/icons";
 import { LogoMark } from "@/components/Logo";
+import { BrandImage } from "@/components/BrandImage";
 import { cn } from "@/lib/utils";
 
 /**
@@ -118,15 +119,24 @@ export function VideoEmbed({
             <span className="relative grid h-16 w-16 place-items-center rounded-full bg-ray-gradient text-ink-950 shadow-glow transition group-hover:scale-105 disabled:opacity-50">
               <PlayIcon className="text-2xl" />
             </span>
-            {/* Brand watermark */}
-            <span className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-2 opacity-70">
-              <LogoMark size={26} animate={false} />
-              <span className="font-display text-xs font-black tracking-tight">
-                <span className="text-white/90">RAY</span>
-                <span className="bg-[linear-gradient(120deg,#ec4899,#a855f7)] bg-clip-text text-transparent">
-                  WORLD
-                </span>
-              </span>
+            {/* Brand watermark — top right */}
+            <span className="pointer-events-none absolute right-3 top-3 opacity-80">
+              <BrandImage
+                src="/brand/watchplayer.png"
+                alt="RAYWORLD"
+                className="h-6 w-auto sm:h-7"
+                fallback={
+                  <span className="flex items-center gap-1.5">
+                    <LogoMark size={22} animate={false} />
+                    <span className="font-display text-xs font-black tracking-tight">
+                      <span className="text-white/90">RAY</span>
+                      <span className="bg-[linear-gradient(120deg,#ec4899,#a855f7)] bg-clip-text text-transparent">
+                        WORLD
+                      </span>
+                    </span>
+                  </span>
+                }
+              />
             </span>
           </button>
         )}

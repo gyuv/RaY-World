@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
+import { BrandImage } from "./BrandImage";
 import { SearchBox } from "./SearchBox";
 import { MenuIcon, CloseIcon, SearchIcon } from "./icons";
 import { cn } from "@/lib/utils";
@@ -50,7 +51,18 @@ export function Navbar() {
       )}
     >
       <div className="container-page flex h-16 items-center gap-4">
-        <Logo />
+        <Link
+          href="/"
+          aria-label="RAYWORLD home"
+          className="rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ray-400"
+        >
+          <BrandImage
+            src="/brand/header.png"
+            alt="RAYWORLD"
+            className="h-9 w-auto sm:h-10"
+            fallback={<Logo asStatic />}
+          />
+        </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => (
