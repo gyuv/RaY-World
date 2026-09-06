@@ -43,6 +43,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen font-sans">
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(sessionStorage.getItem('rayworld:intro:v3')==='1'){document.documentElement.setAttribute('data-intro-seen','1')}}catch(e){}",
+          }}
+        />
         <SiteGuard />
         <IntroSplash />
         <a

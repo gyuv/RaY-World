@@ -237,6 +237,12 @@ body {
   }
 }
 
+/* Repeat visitors: hide the intro overlay before it can paint (set by the
+   inline script in the layout, which runs before hydration). */
+:root[data-intro-seen] .intro-overlay {
+  display: none !important;
+}
+
 /* Seamless marquee for the providers strip (two copies -> shift by half). */
 @keyframes marquee {
   from {

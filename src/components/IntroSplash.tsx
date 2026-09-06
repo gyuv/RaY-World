@@ -9,19 +9,19 @@ const DURATION = 4000; // total ms before auto-dismiss
 const STRANDS = 12;
 
 /**
- * Netflix-style brand intro: on a black stage, gold + arcade-blue light strands
- * rise, a bright "ta-dum" flash reveals the RaY-World mark, the wordmark
- * resolves, then the stage zooms in and fades to the app.
+ * Netflix-style brand intro that paints FIRST (before the page).
  *
- * Performance: every animation here is transform/opacity only (GPU-composited),
- * with `will-change` hints — no blur/mix-blend/background animations that would
- * force main-thread repaints and stutter while the page is still loading.
+ * It renders in the server HTML (initial `show = true`) so the overlay is the
+ * first thing on screen — no flash of the page underneath. A tiny inline script
+ * in the layout sets `data-intro-seen` on <html> before paint for repeat
+ * visitors, and CSS (`:root[data-intro-seen] .intro-overlay { display:none }`)
+ * hides the overlay instantly for them, so it only animates once per session.
  *
- * Plays once per browser session. Respects prefers-reduced-motion (animations
- * collapse via global CSS) and is skippable.
+ * Every animation is transform/opacity only (GPU-composited). Skippable and
+ * reduced-motion aware.
  */
 export function IntroSplash() {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
@@ -31,11 +31,14 @@ export function IntroSplash() {
     } catch {
       seen = false;
     }
-    if (seen) return;
+    // Repeat visitor: the inline script already hid the overlay via CSS; just
+    // unmount it and leave scrolling alone.
+    if (seen) {
+      setShow(false);
+      return;
+    }
 
-    setShow(true);
     document.body.style.overflow = "hidden";
-
     const leaveT = setTimeout(() => setLeaving(true), DURATION - 600);
     const endT = setTimeout(dismiss, DURATION);
 
@@ -53,6 +56,11 @@ export function IntroSplash() {
     } catch {
       /* ignore */
     }
+    try {
+      document.documentElement.setAttribute("data-intro-seen", "1");
+    } catch {
+      /* ignore */
+    }
     document.body.style.overflow = "";
     setLeaving(true);
     setTimeout(() => setShow(false), 500);
@@ -62,7 +70,7 @@ export function IntroSplash() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] overflow-hidden bg-black transition-opacity duration-500"
+      className="intro-overlay fixed inset-0 z-[100] overflow-hidden bg-black transition-opacity duration-500"
       style={{ opacity: leaving ? 0 : 1, contain: "strict" }}
       role="dialog"
       aria-label="RaY-World intro"
@@ -109,7 +117,6 @@ export function IntroSplash() {
           animation: "nf-zoom 0.8s ease-in 3.1s forwards",
         }}
       >
-        {/* Ta-dum flash */}
         <span
           className="pointer-events-none absolute h-[52vmin] w-[52vmin] rounded-full"
           style={{

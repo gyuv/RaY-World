@@ -63,13 +63,13 @@ export async function ProvidersStrip() {
               aria-label={`Explore ${p.name}`}
               className="group flex w-20 flex-none flex-col items-center gap-2 text-center focus:outline-none sm:w-24"
             >
-              <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-white p-2 ring-1 ring-white/15 transition group-hover:ring-2 group-hover:ring-ray-400 sm:h-[72px] sm:w-[72px]">
+              <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-white ring-1 ring-white/15 transition group-hover:ring-2 group-hover:ring-ray-400 sm:h-[72px] sm:w-[72px]">
                 {logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={logo}
                     alt={`${p.name} logo`}
-                    className="h-full w-full rounded-lg object-contain"
+                    className="h-full w-full object-cover"
                     loading="lazy"
                   />
                 ) : (
