@@ -1,39 +1,17 @@
 import Link from "next/link";
 import { PROVIDERS } from "@/lib/config/providers";
 import { provider as mediaProvider } from "@/lib/providers";
-import { WatchProviderInfo } from "@/lib/providers/types";
 import { providerLogoUrl } from "@/lib/images";
+import { resolveProviderLogoPath } from "@/lib/provider-logo";
 
 /**
  * "Explore across platforms" strip.
  *
  * Shows each platform's real logo from TMDB's authorized watch-provider data
  * (served via image.tmdb.org) in a circle, with the name below on up to two
- * lines. Logos resolve by TMDB id first, then by name/alias — so platforms
- * whose ids drift (e.g. Hotstar → JioHotstar, JioCinema) still find a logo.
- * Static (no motion); the row scrolls horizontally if it overflows. Falls back
- * to a monogram badge when no logo is available.
+ * lines. Static (no motion); the row scrolls horizontally if it overflows.
+ * Falls back to a monogram badge when no logo is available.
  */
-
-const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
-
-function resolveLogo(
-  tmdbId: number,
-  name: string,
-  aliases: string[] | undefined,
-  list: WatchProviderInfo[],
-): string | null {
-  const byId = list.find((w) => w.id === tmdbId);
-  if (byId) return byId.logoPath;
-
-  const needles = [name, ...(aliases ?? [])].map(norm).filter(Boolean);
-  const match = list.find((w) => {
-    const wn = norm(w.name);
-    return needles.some((n) => wn.includes(n) || n.includes(wn));
-  });
-  return match?.logoPath ?? null;
-}
-
 export async function ProvidersStrip() {
   const list = mediaProvider.available
     ? await mediaProvider.getWatchProviders("IN").catch(() => [])
@@ -53,7 +31,7 @@ export async function ProvidersStrip() {
       <div className="rail-scroll -mx-1 flex gap-5 overflow-x-auto px-1 pb-3 sm:gap-7">
         {PROVIDERS.map((p) => {
           const logo = providerLogoUrl(
-            resolveLogo(p.tmdbId, p.name, p.aliases, list),
+            resolveProviderLogoPath(p.tmdbId, p.name, p.aliases, list),
             "w92",
           );
           return (
