@@ -1,35 +1,55 @@
 // src/lib/stream.ts
 import { StreamSource } from "@/lib/providers/types";
 
-/**
- * Resolve the list of "servers" (playable sources) for a title/episode.
- *
- * This is the single place you connect sources you are LICENSED to serve —
- * your own CDN files/HLS, Mux, Cloudflare Stream, or an authorized provider
- * embed. Fill each server's `url` below; a server with an empty `url` renders
- * as a disabled button until you configure it.
- *
- * Do NOT put URLs from unauthorized/pirated streaming sites here — that would
- * make RaY-World distribute copyrighted content illegally.
- *
- * Example once you have licensed URLs:
- *   url: `https://stream.yoursite.com/${type}/${id}.m3u8`, kind: "hls"
- *   url: muxPlaybackUrl,                                    kind: "hls"
- *   url: authorizedPartnerEmbedUrl,                         kind: "embed"
- */
 export async function getStreamSources(
   type: "movie" | "tv",
   id: number,
   season?: number,
   episode?: number,
 ): Promise<StreamSource[]> {
-  if (!id) return [];
+ if (!id) return [];
 
-  // 3 server slots. Set each `url` to a licensed source to enable its button.
-  // `type`, `id`, `season`, `episode` are available to build your URLs.
+  // Fallback to season 1, episode 1 if missing for TV shows
+  const s = season || 1;
+  const e = episode || 1;
+
+  // 1. Peachify URL generation (from Code 2 logic)
+  const peachifyUrl =
+    type === "movie"
+      ? `https://peachify.top/embed/movie/${id}`
+      : `https://peachify.top/embed/tv/${id}/${s}/${e}`;
+
+  // 2. 2embed URL generation (adapted for movies and TV)
+  const twoEmbedUrl =
+    type === "movie"
+      ? `https://2embed.cc/embed/movie/${id}`
+      : `https://2embed.cc/embed/tv/${id}/${s}/${e}`;
+
+  // 3. Promulti / Vidsrc fallback URL generation (from Code 2 logic)
+  const vidsrcUrl =
+    type === "movie"
+      ? `https://vidsrc.sbs/embed/movie/${id}?provider=free`
+      : `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}?provider=free`;
+
   return [
-    { id: "server-1", label: "Orange-Server", url: "", kind: "embed" },
-    { id: "server-2", label: "Apple-Server", url: "", kind: "embed" },
-    { id: "server-3", label: "Mango-Server", url: "", kind: "embed" },
+    { 
+      id: "server-1", 
+      label: "Orange-Server (Peachify)", 
+      url: peachifyUrl, 
+      kind: "embed" 
+    },
+    { 
+      id: "server-2", 
+      label: "Apple-Server (2embed)", 
+      url: twoEmbedUrl, 
+      kind: "embed" 
+    },
+    { 
+      id: "server-3", 
+      label: "Mango-Server (Vidsrc)", 
+      url: vidsrcUrl, 
+      kind: "embed" 
+    },
   ];
+}
 }
