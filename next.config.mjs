@@ -6,14 +6,14 @@
  * connections may come from, and forbids other sites from framing yours.
  *
  * Notes / where to extend:
- *  - `frame-src` must list every host you embed in an <iframe>. YouTube (for
- *    trailers) is allowed. When you add a licensed streaming embed in
- *    getStreamSources(kind:"embed"), ADD its host here or the iframe is blocked.
- *  - `media-src` / `connect-src` allow direct video files + HLS from your own
- *    origin; add your CDN/Mux/Cloudflare Stream hosts there when you use them.
- *  - Next.js needs 'unsafe-inline' for its hydration/bootstrap scripts and for
- *    Tailwind's injected styles (nonce-based CSP would force every page to be
- *    dynamically rendered, losing static/ISR — not worth it here).
+ *   - `frame-src` must list every host you embed in an <iframe>. YouTube (for
+ *     trailers) is allowed. When you add a licensed streaming embed in
+ *     getStreamSources(kind:"embed"), ADD its host here or the iframe is blocked.
+ *   - `media-src` / `connect-src` allow direct video files + HLS from your own
+ *     origin; add your CDN/Mux/Cloudflare Stream hosts there when you use them.
+ *   - Next.js needs 'unsafe-inline' for its hydration/bootstrap scripts and for
+ *     Tailwind's injected styles (nonce-based CSP would force every page to be
+ *     dynamically rendered, losing static/ISR — not worth it here).
  */
 const csp = [
   "default-src 'self'",
@@ -21,7 +21,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' https://image.tmdb.org data: blob:",
   "media-src 'self' blob: https:",
-  "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
+  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://peachify.top https://2embed.cc https://vidsrc.sbs",
   "connect-src 'self'",
   "font-src 'self' data:",
   "object-src 'none'",
