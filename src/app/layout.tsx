@@ -22,10 +22,14 @@ export const metadata: Metadata = {
     "RaY-World",
   ],
   openGraph: {
-    title: "RaY-World",
+    title: "RAYWORLD",
     description:
       "A Tamil-first universal entertainment discovery platform.",
     type: "website",
+  },
+  icons: {
+    icon: "/api/icon?size=192",
+    apple: "/api/icon?size=192",
   },
 };
 

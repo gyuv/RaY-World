@@ -1,21 +1,27 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+/*
+ * Brand rendition of the RAYWORLD logo: a dark rounded "RY" badge (silver R,
+ * magenta→violet Y) + the RAYWORLD wordmark (RAY white, WORLD gradient) and the
+ * "Discover • Watch • Enjoy" tagline.
+ *
+ * TO USE THE EXACT ARTWORK: drop your exported files in `public/brand/`
+ * (rayworld-mark.svg, rayworld-lockup.svg) and replace the inner markup of
+ * LogoMark / the wordmark with <img src="/brand/…"/>. Everything else that
+ * imports Logo/LogoMark will pick it up automatically.
+ */
+
 interface LogoProps {
   className?: string;
-  /** Pixel size of the mark. */
   size?: number;
-  /** Heartbeat animation on the mark. */
   animate?: boolean;
-  /** Expanding pulse-rings behind the mark (for the intro / showcase). */
   rings?: boolean;
-  /** Render as a plain span (no link) — for the intro splash. */
   asStatic?: boolean;
-  /** Hide the wordmark, show only the mark. */
   markOnly?: boolean;
+  tagline?: boolean;
 }
 
-/** The RaY-World brand mark: an arcade-blue badge with a shining-gold ray + heartbeat pulse. */
 export function LogoMark({
   size = 36,
   animate = true,
@@ -32,52 +38,55 @@ export function LogoMark({
     >
       {rings && (
         <>
-          <span className="absolute inset-0 rounded-[28%] bg-ray-300/40 animate-pulse-ring" />
+          <span className="absolute inset-0 rounded-[26%] bg-glow-500/40 animate-pulse-ring" />
           <span
-            className="absolute inset-0 rounded-[28%] bg-arcade-400/30 animate-pulse-ring"
+            className="absolute inset-0 rounded-[26%] bg-[#a855f7]/30 animate-pulse-ring"
             style={{ animationDelay: "1.2s" }}
           />
         </>
       )}
       <span
         className={cn(
-          "relative grid h-full w-full place-items-center rounded-[28%] bg-arcade-gradient shadow-glow",
+          "relative grid h-full w-full place-items-center rounded-[26%] bg-gradient-to-br from-ink-800 to-ink-950 shadow-glow ring-1 ring-white/15",
           animate && "animate-heartbeat",
         )}
       >
-        <svg
-          viewBox="0 0 48 48"
-          className="h-[70%] w-[70%]"
-          aria-hidden
-          fill="none"
+        <span
+          className="font-display font-black leading-none tracking-tighter"
+          style={{ fontSize: size * 0.48 }}
         >
-          {/* Heartbeat / ECG ray forming an upward pulse */}
-          <path
-            d="M6 27 H15 L19 15 L25 34 L29 24 H34"
-            stroke="#02060f"
-            strokeWidth="5.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity="0.35"
-          />
-          <path
-            d="M6 27 H15 L19 15 L25 34 L29 24 H34"
-            stroke="url(#rayGold)"
-            strokeWidth="3.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          {/* Play spark */}
-          <path d="M34 19 L42 24 L34 29 Z" fill="url(#rayGold)" />
-          <defs>
-            <linearGradient id="rayGold" x1="0" y1="0" x2="48" y2="48">
-              <stop offset="0%" stopColor="#fff6d6" />
-              <stop offset="50%" stopColor="#ffd75e" />
-              <stop offset="100%" stopColor="#d99406" />
-            </linearGradient>
-          </defs>
-        </svg>
+          <span className="bg-[linear-gradient(160deg,#ffffff,#9aa2ba)] bg-clip-text text-transparent">
+            R
+          </span>
+          <span className="bg-[linear-gradient(160deg,#f472b6,#a855f7)] bg-clip-text text-transparent">
+            Y
+          </span>
+        </span>
       </span>
+    </span>
+  );
+}
+
+function Wordmark({ size, tagline }: { size: number; tagline?: boolean }) {
+  return (
+    <span className="flex flex-col leading-none">
+      <span
+        className="font-display font-black tracking-tight"
+        style={{ fontSize: size * 0.5 }}
+      >
+        <span className="text-white">RAY</span>
+        <span className="bg-[linear-gradient(120deg,#ec4899,#a855f7)] bg-clip-text text-transparent">
+          WORLD
+        </span>
+      </span>
+      {tagline && (
+        <span
+          className="mt-1 font-semibold uppercase text-white/45"
+          style={{ fontSize: Math.max(8, size * 0.16), letterSpacing: "0.28em" }}
+        >
+          Discover • Watch • Enjoy
+        </span>
+      )}
     </span>
   );
 }
@@ -89,19 +98,12 @@ export function Logo({
   rings = false,
   asStatic = false,
   markOnly = false,
+  tagline = false,
 }: LogoProps) {
   const inner = (
     <>
       <LogoMark size={size} animate={animate} rings={rings} />
-      {!markOnly && (
-        <span
-          className="font-display text-lg font-black tracking-tight"
-          style={{ fontSize: size * 0.52 }}
-        >
-          <span className="text-gold-shine">RaY</span>
-          <span className="text-white/90">-World</span>
-        </span>
-      )}
+      {!markOnly && <Wordmark size={size} tagline={tagline} />}
     </>
   );
 
@@ -117,10 +119,10 @@ export function Logo({
     <Link
       href="/"
       className={cn(
-        "group inline-flex items-center gap-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-ray-400 rounded-xl",
+        "group inline-flex items-center gap-2.5 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ray-400",
         className,
       )}
-      aria-label="RaY-World home"
+      aria-label="RAYWORLD home"
     >
       {inner}
     </Link>

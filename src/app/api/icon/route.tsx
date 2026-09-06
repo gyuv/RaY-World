@@ -27,26 +27,27 @@ export function GET(req: NextRequest) {
       >
         <div
           style={{
-            width: "62%",
-            height: "62%",
+            width: "64%",
+            height: "64%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            borderRadius: size * 0.18,
-            background:
-              "linear-gradient(135deg, #ffe58a 0%, #ffc933 50%, #d99406 100%)",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.35)",
+            borderRadius: size * 0.2,
+            background: "linear-gradient(135deg, #15151f 0%, #02060f 100%)",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.45)",
+            border: "1px solid rgba(255,255,255,0.12)",
           }}
         >
           <div
             style={{
-              fontSize: size * 0.3,
+              display: "flex",
+              fontSize: size * 0.34,
               fontWeight: 900,
-              color: "#02060f",
               letterSpacing: -2,
             }}
           >
-            RaY
+            <span style={{ color: "#e7e9f2" }}>R</span>
+            <span style={{ color: "#ec4899" }}>Y</span>
           </div>
         </div>
       </div>

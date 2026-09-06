@@ -145,18 +145,20 @@ export function IntroSplash() {
             animation: "intro-word 0.7s ease-out 2.05s forwards",
           }}
         >
-          <span className="text-gold-shine">RaY</span>
-          <span className="text-white">-World</span>
+          <span className="text-white">RAY</span>
+          <span className="bg-[linear-gradient(120deg,#ec4899,#a855f7)] bg-clip-text text-transparent">
+            WORLD
+          </span>
         </h1>
 
         <p
-          className="mt-5 text-xs uppercase tracking-[0.4em] text-arcade-200 opacity-0 sm:text-sm"
+          className="mt-5 text-xs uppercase tracking-[0.4em] text-white/50 opacity-0 sm:text-sm"
           style={{
             willChange: "transform, opacity",
             animation: "intro-word 0.8s ease-out 2.35s forwards",
           }}
         >
-          Tamil-first · Universal · Cinematic
+          Discover • Watch • Enjoy
         </p>
       </div>
 

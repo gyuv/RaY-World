@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="mt-12 border-t border-white/10 bg-ink-950/60">
       <div className="container-page grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-3">
-          <Logo />
+          <Logo tagline />
           <p className="max-w-xs text-sm text-white/50">
             A Tamil-first universal entertainment discovery platform. Explore
             movies and series across every language.

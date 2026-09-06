@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { StreamSource } from "@/lib/providers/types";
 import { PlayIcon, CloseIcon } from "@/components/icons";
+import { LogoMark } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 
 /**
@@ -116,6 +117,16 @@ export function VideoEmbed({
             <div className="absolute inset-0 bg-ink-950/40" />
             <span className="relative grid h-16 w-16 place-items-center rounded-full bg-ray-gradient text-ink-950 shadow-glow transition group-hover:scale-105 disabled:opacity-50">
               <PlayIcon className="text-2xl" />
+            </span>
+            {/* Brand watermark */}
+            <span className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-2 opacity-70">
+              <LogoMark size={26} animate={false} />
+              <span className="font-display text-xs font-black tracking-tight">
+                <span className="text-white/90">RAY</span>
+                <span className="bg-[linear-gradient(120deg,#ec4899,#a855f7)] bg-clip-text text-transparent">
+                  WORLD
+                </span>
+              </span>
             </span>
           </button>
         )}
