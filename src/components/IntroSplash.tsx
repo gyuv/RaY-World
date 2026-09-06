@@ -4,14 +4,18 @@ import { useEffect, useState } from "react";
 import { LogoMark } from "./Logo";
 
 const SEEN_KEY = "rayworld:intro:v3";
-const DURATION = 4200; // total ms before auto-dismiss
+const DURATION = 4000; // total ms before auto-dismiss
 
-const STRANDS = 18;
+const STRANDS = 12;
 
 /**
  * Netflix-style brand intro: on a black stage, gold + arcade-blue light strands
- * rise and shimmer, a bright "ta-dum" flash reveals the RaY-World mark, the
- * wordmark resolves, then the stage zooms in and fades to the app.
+ * rise, a bright "ta-dum" flash reveals the RaY-World mark, the wordmark
+ * resolves, then the stage zooms in and fades to the app.
+ *
+ * Performance: every animation here is transform/opacity only (GPU-composited),
+ * with `will-change` hints — no blur/mix-blend/background animations that would
+ * force main-thread repaints and stutter while the page is still loading.
  *
  * Plays once per browser session. Respects prefers-reduced-motion (animations
  * collapse via global CSS) and is skippable.
@@ -32,7 +36,7 @@ export function IntroSplash() {
     setShow(true);
     document.body.style.overflow = "hidden";
 
-    const leaveT = setTimeout(() => setLeaving(true), DURATION - 650);
+    const leaveT = setTimeout(() => setLeaving(true), DURATION - 600);
     const endT = setTimeout(dismiss, DURATION);
 
     return () => {
@@ -51,7 +55,7 @@ export function IntroSplash() {
     }
     document.body.style.overflow = "";
     setLeaving(true);
-    setTimeout(() => setShow(false), 550);
+    setTimeout(() => setShow(false), 500);
   }
 
   if (!show) return null;
@@ -59,32 +63,38 @@ export function IntroSplash() {
   return (
     <div
       className="fixed inset-0 z-[100] overflow-hidden bg-black transition-opacity duration-500"
-      style={{ opacity: leaving ? 0 : 1 }}
+      style={{ opacity: leaving ? 0 : 1, contain: "strict" }}
       role="dialog"
       aria-label="RaY-World intro"
     >
-      {/* Rising light strands */}
-      <div className="absolute inset-0 flex items-stretch justify-center gap-[1.2vw] px-[4vw]">
+      {/* Static ambient glow (painted once, never animated). */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(50% 55% at 50% 52%, rgba(31,107,255,0.18), transparent 70%)",
+        }}
+      />
+
+      {/* Rising light strands — transform/opacity only, GPU-composited. */}
+      <div className="absolute inset-0 flex items-stretch justify-center gap-[1.4vw] px-[6vw]">
         {Array.from({ length: STRANDS }).map((_, i) => {
           const gold = i % 2 === 0;
-          const color = gold
-            ? "rgba(255,215,94,0.85)"
-            : "rgba(61,132,255,0.85)";
+          const color = gold ? "rgba(255,215,94,0.9)" : "rgba(61,132,255,0.9)";
+          const tip = gold ? "#fff6d6" : "#cfe0ff";
           return (
             <span
               key={i}
               className="h-full flex-1 origin-bottom rounded-full"
               style={{
-                maxWidth: "10px",
-                background: `linear-gradient(to top, transparent, ${color} 45%, ${
-                  gold ? "#fff6d6" : "#cfe0ff"
-                } 100%)`,
-                filter: "blur(1px)",
-                mixBlendMode: "screen",
+                maxWidth: "8px",
+                background: `linear-gradient(to top, transparent, ${color} 50%, ${tip} 100%)`,
                 opacity: 0,
-                animation: `nf-strand 1.9s cubic-bezier(0.22,0.61,0.36,1) ${
-                  i * 45
-                }ms forwards`,
+                willChange: "transform, opacity",
+                transform: "translateZ(0)",
+                animation: `nf-strand 1.7s cubic-bezier(0.22,0.61,0.36,1) ${
+                  i * 40
+                }ms both`,
               }}
             />
           );
@@ -94,7 +104,10 @@ export function IntroSplash() {
       {/* Center stage: flash + mark + wordmark, with a final zoom */}
       <div
         className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-        style={{ animation: "nf-zoom 0.9s ease-in 3.2s forwards" }}
+        style={{
+          willChange: "transform",
+          animation: "nf-zoom 0.8s ease-in 3.1s forwards",
+        }}
       >
         {/* Ta-dum flash */}
         <span
@@ -103,15 +116,16 @@ export function IntroSplash() {
             background:
               "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,215,94,0.6) 35%, rgba(31,107,255,0.25) 60%, transparent 72%)",
             opacity: 0,
-            animation: "nf-flash 1.2s ease-out 1.1s forwards",
+            willChange: "transform, opacity",
+            animation: "nf-flash 1.1s ease-out 1.05s both",
           }}
         />
 
         <div
           style={{
             opacity: 0,
-            animation:
-              "nf-mark 1.2s cubic-bezier(0.2,0.8,0.2,1) 1.1s forwards",
+            willChange: "transform, opacity",
+            animation: "nf-mark 1.1s cubic-bezier(0.2,0.8,0.2,1) 1.05s both",
           }}
         >
           <LogoMark size={132} animate rings />
@@ -119,7 +133,10 @@ export function IntroSplash() {
 
         <h1
           className="mt-8 font-display text-5xl font-black tracking-tight opacity-0 sm:text-7xl tv:text-8xl"
-          style={{ animation: "intro-word 0.8s ease-out 2.15s forwards" }}
+          style={{
+            willChange: "transform, opacity",
+            animation: "intro-word 0.7s ease-out 2.05s forwards",
+          }}
         >
           <span className="text-gold-shine">RaY</span>
           <span className="text-white">-World</span>
@@ -127,7 +144,10 @@ export function IntroSplash() {
 
         <p
           className="mt-5 text-xs uppercase tracking-[0.4em] text-arcade-200 opacity-0 sm:text-sm"
-          style={{ animation: "intro-word 0.9s ease-out 2.5s forwards" }}
+          style={{
+            willChange: "transform, opacity",
+            animation: "intro-word 0.8s ease-out 2.35s forwards",
+          }}
         >
           Tamil-first · Universal · Cinematic
         </p>
