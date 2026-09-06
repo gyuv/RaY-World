@@ -17,6 +17,7 @@ import {
   SortKey,
   TrendingOptions,
   Video,
+  WatchProviderInfo,
 } from "./types";
 import { getGenreId } from "../config/genres";
 
@@ -444,10 +445,8 @@ class TmdbProvider implements MediaProvider {
     return this.discover({ ...options, sort: "latest" });
   }
 
-  async getWatchProviderLogos(
-    region = "IN",
-  ): Promise<Record<number, string>> {
-    const map: Record<number, string> = {};
+  async getWatchProviders(region = "IN"): Promise<WatchProviderInfo[]> {
+    const byId = new Map<number, WatchProviderInfo>();
     try {
       const [movies, tv] = await Promise.all([
         tmdbFetch<{ results?: any[] }>("/watch/providers/movie", {
@@ -460,14 +459,18 @@ class TmdbProvider implements MediaProvider {
         }),
       ]);
       for (const r of [...(movies.results ?? []), ...(tv.results ?? [])]) {
-        if (r.provider_id && r.logo_path && !map[r.provider_id]) {
-          map[r.provider_id] = r.logo_path;
+        if (r.provider_id && r.logo_path && !byId.has(r.provider_id)) {
+          byId.set(r.provider_id, {
+            id: r.provider_id,
+            name: r.provider_name ?? "",
+            logoPath: r.logo_path,
+          });
         }
       }
     } catch {
       /* return whatever we have; caller falls back to monograms */
     }
-    return map;
+    return [...byId.values()];
   }
 }
 

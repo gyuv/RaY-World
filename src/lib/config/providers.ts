@@ -18,6 +18,8 @@ export interface StreamingProvider {
   mono: string;
   tint: string;
   tagline: string;
+  /** Name fragments used to match TMDB's provider list when the id drifts. */
+  aliases?: string[];
 }
 
 export const PROVIDERS: StreamingProvider[] = [
@@ -29,6 +31,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "N",
     tint: "from-rose-500/30 to-rose-700/20",
     tagline: "Binge the world's biggest hits, originals and series.",
+    aliases: ["netflix"],
   },
   {
     slug: "prime-video",
@@ -38,6 +41,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "P",
     tint: "from-sky-500/30 to-sky-700/20",
     tagline: "Blockbusters, award-winning originals and more.",
+    aliases: ["amazon prime", "prime video"],
   },
   {
     slug: "disney-hotstar",
@@ -47,6 +51,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "D",
     tint: "from-indigo-500/30 to-indigo-700/20",
     tagline: "Movies, marquee series and live sport in one place.",
+    aliases: ["hotstar", "disney"],
   },
   {
     slug: "sun-nxt",
@@ -56,6 +61,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "S",
     tint: "from-amber-500/30 to-orange-700/20",
     tagline: "The home of South Indian cinema, all in one place.",
+    aliases: ["sun nxt"],
   },
   {
     slug: "aha",
@@ -65,6 +71,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "a",
     tint: "from-orange-500/30 to-red-700/20",
     tagline: "Telugu and Tamil entertainment, unlimited.",
+    aliases: ["aha"],
   },
   {
     slug: "zee5",
@@ -74,6 +81,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "Z",
     tint: "from-fuchsia-500/30 to-purple-700/20",
     tagline: "Stream across languages, genres and originals.",
+    aliases: ["zee5"],
   },
   {
     slug: "sonyliv",
@@ -83,6 +91,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "L",
     tint: "from-blue-500/30 to-blue-800/20",
     tagline: "Premium originals and live entertainment.",
+    aliases: ["sonyliv", "sony liv"],
   },
   {
     slug: "jiocinema",
@@ -92,6 +101,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "J",
     tint: "from-pink-500/30 to-rose-700/20",
     tagline: "Movies, shows and blockbuster action.",
+    aliases: ["jiocinema", "jio cinema", "jio"],
   },
   {
     slug: "apple-tv-plus",
@@ -101,6 +111,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "TV",
     tint: "from-zinc-400/30 to-zinc-700/20",
     tagline: "Award-winning originals, made to be seen.",
+    aliases: ["apple tv"],
   },
   {
     slug: "youtube",
@@ -110,6 +121,7 @@ export const PROVIDERS: StreamingProvider[] = [
     mono: "Y",
     tint: "from-red-500/30 to-red-800/20",
     tagline: "From trailers to full features.",
+    aliases: ["youtube"],
   },
 ];
 
