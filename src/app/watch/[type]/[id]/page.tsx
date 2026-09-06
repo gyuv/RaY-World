@@ -60,8 +60,7 @@ export default async function WatchPage({
               title={detail.title}
               backdropPath={detail.backdropPath}
               videos={detail.videos}
-              streamUrl={stream?.url}
-              streamKind={stream?.kind}
+              source={stream}
             />
             <div className="mt-5 flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -169,8 +168,7 @@ async function TvWatch({
           backdropPath={detail.backdropPath}
           stillPath={current?.stillPath}
           videos={detail.videos}
-          streamUrl={stream?.url}
-          streamKind={stream?.kind}
+          source={stream}
         />
 
         <div className="mt-5 flex flex-wrap items-start justify-between gap-4">

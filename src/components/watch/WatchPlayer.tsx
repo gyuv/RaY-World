@@ -3,32 +3,34 @@
 import { useState } from "react";
 import Image from "next/image";
 import { backdropUrl, stillUrl } from "@/lib/images";
-import { Video } from "@/lib/providers/types";
+import { StreamSource, Video } from "@/lib/providers/types";
 import { PlayIcon, CloseIcon } from "@/components/icons";
+import { VideoEmbed } from "./VideoEmbed";
 
 interface WatchPlayerProps {
   title: string;
   backdropPath?: string | null;
-  stillPath?: string | null; // Keep only ONE of these
+  stillPath?: string | null;
   videos: Video[];
-  streamUrl?: string | null;
-  streamKind?: "file" | "hls" | "embed";
+  /** A licensed stream resolved by getStreamSource(); null falls back to trailer. */
+  source?: StreamSource | null;
 }
 
 /**
- * Cinematic player surface.
+ * Cinematic player shell. It owns the poster / play / close UI only — the
+ * actual stream rendering lives in <VideoEmbed>, so future streaming changes
+ * touch that component (and src/lib/stream.ts), never this file or the page.
  *
- * Playback priority: a licensed `streamUrl` if one is provided, otherwise the
- * authorized YouTube trailer preview, otherwise a "connect a source" state.
- * It never scrapes or proxies unauthorized streaming sources (spec §23).
+ * Playback priority: a licensed `source`, else the authorized YouTube trailer
+ * preview, else a "connect a source" state. Never scrapes or proxies
+ * unauthorized streaming sources (spec §23).
  */
 export function WatchPlayer({
   title,
   backdropPath,
   stillPath,
   videos,
-  streamUrl,
-  streamKind = "embed",
+  source,
 }: WatchPlayerProps) {
   const [playing, setPlaying] = useState(false);
 
@@ -37,38 +39,15 @@ export function WatchPlayer({
     videos.find((v) => v.type === "Trailer") ??
     videos.find((v) => v.type === "Teaser");
 
-  const image =
-    stillUrl(stillPath, "w780") ?? backdropUrl(backdropPath, "w1280");
-
-  const canPlay = Boolean(streamUrl || trailer);
+  const image = stillUrl(stillPath, "w780") ?? backdropUrl(backdropPath, "w1280");
+  const canPlay = Boolean(source || trailer);
 
   return (
     <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black ring-1 ring-white/10">
       {playing && canPlay ? (
         <>
-          {streamUrl ? (
-            streamKind === "embed" ? (
-              // Licensed provider embed (e.g. Mux/Cloudflare Stream, or an
-              // authorized partner player).
-              <iframe
-                src={streamUrl}
-                title={title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="h-full w-full"
-              />
-            ) : (
-              // Direct file (MP4/WebM) or HLS manifest. HLS plays natively in
-              // Safari/iOS; add hls.js for other browsers if you use HLS.
-              <video
-                src={streamUrl}
-                controls
-                autoPlay
-                playsInline
-                poster={image ?? undefined}
-                className="h-full w-full bg-black"
-              />
-            )
+          {source ? (
+            <VideoEmbed source={source} title={title} poster={image} />
           ) : trailer ? (
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${trailer.key}?autoplay=1&rel=0`}
@@ -111,7 +90,7 @@ export function WatchPlayer({
               <PlayIcon className="text-2xl" />
             </button>
             <p className="max-w-md px-6 text-sm text-white/70">
-              {streamUrl
+              {source
                 ? "Ready to play."
                 : trailer
                   ? "Playing official preview. Connect a licensed source to stream the full title."
