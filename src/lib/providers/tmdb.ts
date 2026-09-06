@@ -443,6 +443,32 @@ class TmdbProvider implements MediaProvider {
     // The date cap and zero vote-floor are applied inside discover().
     return this.discover({ ...options, sort: "latest" });
   }
+
+  async getWatchProviderLogos(
+    region = "IN",
+  ): Promise<Record<number, string>> {
+    const map: Record<number, string> = {};
+    try {
+      const [movies, tv] = await Promise.all([
+        tmdbFetch<{ results?: any[] }>("/watch/providers/movie", {
+          params: { watch_region: region },
+          revalidate: CACHE.static,
+        }),
+        tmdbFetch<{ results?: any[] }>("/watch/providers/tv", {
+          params: { watch_region: region },
+          revalidate: CACHE.static,
+        }),
+      ]);
+      for (const r of [...(movies.results ?? []), ...(tv.results ?? [])]) {
+        if (r.provider_id && r.logo_path && !map[r.provider_id]) {
+          map[r.provider_id] = r.logo_path;
+        }
+      }
+    } catch {
+      /* return whatever we have; caller falls back to monograms */
+    }
+    return map;
+  }
 }
 
 function mapCast(cast?: any[]): CastMember[] {

@@ -206,6 +206,8 @@ export interface MediaProvider {
   getPopular(options: FeedOptions): Promise<Paginated<MediaItem>>;
   getTopRated(options: FeedOptions): Promise<Paginated<MediaItem>>;
   getLatest(options: FeedOptions): Promise<Paginated<MediaItem>>;
+  /** Map of TMDB watch-provider id -> logo_path, for a region. */
+  getWatchProviderLogos(region?: string): Promise<Record<number, string>>;
 }
 
 /** Thrown when the upstream provider is not configured or unreachable. */
