@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { PROVIDERS } from "@/lib/config/providers";
 import { provider as mediaProvider } from "@/lib/providers";
-import { providerLogoUrl } from "@/lib/images";
-import { resolveProviderLogoPath } from "@/lib/provider-logo";
+import { ProviderLogo } from "@/components/ProviderLogo";
 
 /**
  * "Explore across platforms" strip.
@@ -29,41 +28,23 @@ export async function ProvidersStrip() {
       </div>
 
       <div className="rail-scroll -mx-1 flex gap-5 overflow-x-auto px-1 pb-3 sm:gap-7">
-        {PROVIDERS.map((p) => {
-          const logo = providerLogoUrl(
-            resolveProviderLogoPath(p.tmdbId, p.name, p.aliases, list),
-            "w92",
-          );
-          return (
-            <Link
-              key={p.slug}
-              href={`/provider/${p.slug}`}
-              aria-label={`Explore ${p.name}`}
-              className="group flex w-20 flex-none flex-col items-center gap-2 text-center focus:outline-none sm:w-24"
-            >
-              <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-white ring-1 ring-white/15 transition group-hover:ring-2 group-hover:ring-ray-400 sm:h-[72px] sm:w-[72px]">
-                {logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={logo}
-                    alt={`${p.name} logo`}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <span
-                    className={`grid h-full w-full place-items-center rounded-full bg-gradient-to-br ${p.tint} text-lg font-black text-white/80`}
-                  >
-                    {p.mono}
-                  </span>
-                )}
-              </span>
-              <span className="line-clamp-2 text-xs font-semibold leading-tight text-white/75 group-hover:text-white">
-                {p.name}
-              </span>
-            </Link>
-          );
-        })}
+        {PROVIDERS.map((p) => (
+          <Link
+            key={p.slug}
+            href={`/provider/${p.slug}`}
+            aria-label={`Explore ${p.name}`}
+            className="group flex w-20 flex-none flex-col items-center gap-2 text-center focus:outline-none sm:w-24"
+          >
+            <ProviderLogo
+              provider={p}
+              list={list}
+              className="h-16 w-16 transition group-hover:ring-2 group-hover:ring-ray-400 sm:h-[72px] sm:w-[72px]"
+            />
+            <span className="line-clamp-2 text-xs font-semibold leading-tight text-white/75 group-hover:text-white">
+              {p.name}
+            </span>
+          </Link>
+        ))}
       </div>
     </section>
   );

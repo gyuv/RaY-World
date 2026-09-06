@@ -5,8 +5,7 @@ import { provider as mediaProvider } from "@/lib/providers";
 import { PROVIDERS, getProvider } from "@/lib/config/providers";
 import { GENRES } from "@/lib/config/genres";
 import { discoverRail } from "@/lib/catalog";
-import { providerLogoUrl } from "@/lib/images";
-import { resolveProviderLogoPath } from "@/lib/provider-logo";
+import { ProviderLogo } from "@/components/ProviderLogo";
 import { MediaRail } from "@/components/MediaRail";
 import { TopTenRail } from "@/components/TopTenRail";
 import { EmptyState } from "@/components/EmptyState";
@@ -57,10 +56,6 @@ export default async function ProviderPage({
   const providerList = await mediaProvider
     .getWatchProviders(p.region)
     .catch(() => []);
-  const logo = providerLogoUrl(
-    resolveProviderLogoPath(p.tmdbId, p.name, p.aliases, providerList),
-    "w154",
-  );
 
   // Build all rails in parallel; each never throws.
   const [topTenTamil, latest, popular, topRated, ...genreRails] =
@@ -91,25 +86,13 @@ export default async function ProviderPage({
       <header className="border-b border-white/10 bg-ink-900/40">
         <div className="container-page py-8 sm:py-10">
           <div className="flex items-center gap-4">
-            {logo ? (
-              <span className="grid h-16 w-16 flex-none place-items-center overflow-hidden rounded-2xl bg-white ring-1 ring-white/15 sm:h-20 sm:w-20">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={logo}
-                  alt={`${p.name} logo`}
-                  className="h-full w-full object-contain p-1.5"
-                />
-              </span>
-            ) : (
-              <span
-                className={cn(
-                  "grid h-16 w-16 flex-none place-items-center rounded-2xl bg-gradient-to-br text-2xl font-black text-white/80 ring-1 ring-white/10 sm:h-20 sm:w-20 sm:text-3xl",
-                  p.tint,
-                )}
-              >
-                {p.mono}
-              </span>
-            )}
+            <ProviderLogo
+              provider={p}
+              list={providerList}
+              big
+              shape="rounded"
+              className="h-16 w-16 sm:h-20 sm:w-20"
+            />
             <div className="min-w-0">
               <h1 className="text-3xl font-black tracking-tight sm:text-4xl tv:text-5xl">
                 {p.name}
