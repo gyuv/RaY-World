@@ -118,6 +118,22 @@ export async function browse(
   return page;
 }
 
+/**
+ * Discover a single rail's items with the standard poster-first filtering.
+ * Never throws — returns [] on any error so a page never breaks.
+ */
+export async function discoverRail(
+  options: DiscoverOptions,
+  limit = 20,
+): Promise<MediaItem[]> {
+  if (!provider.available) return [];
+  const page = await safe(provider.discover(options), EMPTY);
+  return unique(
+    page.results.filter((m) => m.posterPath),
+    (m) => `${m.type}:${m.id}`,
+  ).slice(0, limit);
+}
+
 /** Pick a hero item from a set of candidates: first with a backdrop. */
 export function pickHero(items: MediaItem[]): MediaItem | undefined {
   const ranked = rankMedia(

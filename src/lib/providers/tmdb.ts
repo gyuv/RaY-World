@@ -387,6 +387,13 @@ class TmdbProvider implements MediaProvider {
 
     if (options.minRating) params["vote_average.gte"] = options.minRating;
 
+    // Watch-provider availability (TMDB "where to watch"). watch_region is
+    // required whenever with_watch_providers is set.
+    if (options.watchProvider) {
+      params["with_watch_providers"] = options.watchProvider;
+      params["watch_region"] = options.watchRegion ?? "IN";
+    }
+
     const dateField =
       type === "movie" ? "primary_release_date" : "first_air_date";
     if (options.year) {

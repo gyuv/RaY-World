@@ -164,6 +164,10 @@ export interface DiscoverOptions {
   minRating?: number;
   sort?: SortKey;
   page?: number;
+  /** TMDB watch-provider id (with_watch_providers). */
+  watchProvider?: number;
+  /** Watch region for provider availability, e.g. "IN". */
+  watchRegion?: string;
 }
 
 export type SortKey =

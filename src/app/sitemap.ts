@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { GENRES } from "@/lib/config/genres";
 import { LANGUAGES } from "@/lib/config/languages";
+import { PROVIDERS } from "@/lib/config/providers";
 
 const BASE = "https://ray-world.example";
 
@@ -36,5 +37,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   }));
 
-  return [...staticRoutes, ...genreRoutes, ...languageRoutes];
+  const providerRoutes = PROVIDERS.map((p) => ({
+    url: `${BASE}/provider/${p.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.6,
+  }));
+
+  return [
+    ...staticRoutes,
+    ...genreRoutes,
+    ...languageRoutes,
+    ...providerRoutes,
+  ];
 }
