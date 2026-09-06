@@ -50,17 +50,17 @@ export function Navbar() {
           : "bg-gradient-to-b from-ink-950/90 to-transparent",
       )}
     >
-      <div className="container-page flex h-16 items-center gap-4">
+      <div className="container-page flex h-16 items-center gap-4 sm:h-20">
         <Link
           href="/"
           aria-label="RAYWORLD home"
           className="rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ray-400"
         >
           <BrandImage
-            src="/brand/header.png"
+            src="/brand/footer.png"
             alt="RAYWORLD"
-            className="h-9 w-auto sm:h-10"
-            fallback={<Logo asStatic />}
+            className="h-12 w-auto sm:h-16 lg:h-[68px]"
+            fallback={<Logo asStatic size={44} />}
           />
         </Link>
 
