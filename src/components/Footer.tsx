@@ -43,10 +43,14 @@ export function Footer() {
       <div className="container-page space-y-2 border-t border-white/10 py-6 text-xs text-white/40">
         <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
           <p>© {new Date().getFullYear()} RaY-World. All rights reserved.</p>
-          <p>
-            Metadata provided by TMDB. This product uses the TMDB API but is not
-            endorsed or certified by TMDB.
-          </p>
+          <div className="flex items-center gap-4">
+            <Link href="/disclaimer" className="hover:text-ray-300">
+              Disclaimer
+            </Link>
+            <span className="text-white/50">
+              Metadata by TMDB — not endorsed or certified by TMDB.
+            </span>
+          </div>
         </div>
         <p className="text-center text-white/30 sm:text-left">
           The RaY-World name, logo, design and code are protected by copyright.
