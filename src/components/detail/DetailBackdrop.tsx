@@ -25,48 +25,56 @@ export function DetailBackdrop({
     return () => clearTimeout(t);
   }, [trailerKey]);
 
+  // Fade the sharp imagery to transparent at the bottom so it dissolves into
+  // the page's blurred wash — no hard seam between the hero and the sections.
+  const fadeMask =
+    "linear-gradient(to bottom, #000 0%, #000 55%, transparent 96%)";
+
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {backdrop ? (
-        <Image
-          src={backdrop}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className={cn(
-            "object-cover object-top transition-opacity duration-1000",
-            showVideo && trailerKey ? "opacity-0" : "opacity-100",
-          )}
-        />
-      ) : (
-        <div className="h-full w-full bg-gradient-to-br from-ink-800 to-ink-950" />
-      )}
-
-      {showVideo && trailerKey && (
-        <div className="absolute inset-0 animate-[fade-in_1.2s_ease-out]">
-          {/* Sharp trailer, sized to COVER so YouTube's controls/title sit
-              off-screen (cropped) — no blur, no visible play/next chrome. */}
-          <iframe
-            title="Trailer preview"
-            aria-hidden
-            tabIndex={-1}
-            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-            style={{
-              width: "100vw",
-              height: "56.25vw",
-              minHeight: "100%",
-              minWidth: "177.78vh",
-            }}
-            src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&fs=0`}
-            allow="autoplay; encrypted-media"
+      <div
+        className="absolute inset-0"
+        style={{ maskImage: fadeMask, WebkitMaskImage: fadeMask }}
+      >
+        {backdrop ? (
+          <Image
+            src={backdrop}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className={cn(
+              "object-cover object-top transition-opacity duration-1000",
+              showVideo && trailerKey ? "opacity-0" : "opacity-100",
+            )}
           />
-        </div>
-      )}
+        ) : (
+          <div className="h-full w-full bg-gradient-to-br from-ink-800 to-ink-950" />
+        )}
 
-      {/* Legibility overlays — light touch so the trailer stays bright */}
-      <div className="absolute inset-0 bg-ink-950/10" />
-      <div className="absolute inset-0 bg-hero-fade" />
+        {showVideo && trailerKey && (
+          <div className="absolute inset-0 animate-[fade-in_1.2s_ease-out]">
+            {/* Sharp trailer, sized to COVER so YouTube's controls/title sit
+                off-screen (cropped) — no visible play/next chrome. */}
+            <iframe
+              title="Trailer preview"
+              aria-hidden
+              tabIndex={-1}
+              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              style={{
+                width: "100vw",
+                height: "56.25vw",
+                minHeight: "100%",
+                minWidth: "177.78vh",
+              }}
+              src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&fs=0`}
+              allow="autoplay; encrypted-media"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Left scrim only (vertical gradient) — text legibility, no horizontal band. */}
       <div className="absolute inset-0 bg-side-fade" />
     </div>
   );

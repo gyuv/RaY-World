@@ -32,6 +32,19 @@ export function DetailInfoPanel({ item }: { item: MovieDetail | SeriesDetail }) 
 
   if (item.status) rows.push({ label: "Status", value: item.status });
 
+  const houses =
+    item.type === "movie" ? item.productionCompanies : item.networks;
+  const production = (houses ?? [])
+    .map((h) => h.name)
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(", ");
+  if (production)
+    rows.push({
+      label: item.type === "movie" ? "Production" : "Network",
+      value: production,
+    });
+
   if (rows.length === 0) return null;
 
   return (

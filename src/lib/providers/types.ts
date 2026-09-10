@@ -123,6 +123,7 @@ export interface MovieDetail extends MediaItem {
   budget?: number;
   revenue?: number;
   collection?: { id: number; name: string } | null;
+  productionCompanies?: { name: string; logoPath?: string | null }[];
 }
 
 /** Full detail record for a TV series. */
@@ -143,6 +144,7 @@ export interface SeriesDetail extends MediaItem {
   episodeRunTime?: number[];
   status?: string;
   creators: CrewMember[];
+  networks?: { name: string; logoPath?: string | null }[];
 }
 
 export interface Paginated<T> {

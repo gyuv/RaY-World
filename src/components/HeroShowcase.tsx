@@ -86,32 +86,42 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
 
       {/* Hero stage — fills the screen */}
       <div className="relative h-[100svh] min-h-[600px] w-full overflow-hidden">
-        {items.map((it, i) => {
-          const bd = backdropUrl(it.backdropPath, "w1280");
-          return (
-            <div
-              key={it.id}
-              className={cn(
-                "absolute inset-0 transition-opacity duration-700",
-                i === active ? "opacity-100" : "opacity-0",
-              )}
-            >
-              {bd ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={bd}
-                  alt=""
-                  loading={i === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  className="h-full w-full object-cover object-top"
-                />
-              ) : (
-                <div className="h-full w-full bg-gradient-to-br from-ink-800 to-ink-950" />
-              )}
-            </div>
-          );
-        })}
-        <div className="absolute inset-0 bg-hero-fade" />
+        {/* Imagery dissolves to transparent at the bottom into the page wash. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            maskImage:
+              "linear-gradient(to bottom, #000 0%, #000 60%, transparent 98%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, #000 0%, #000 60%, transparent 98%)",
+          }}
+        >
+          {items.map((it, i) => {
+            const bd = backdropUrl(it.backdropPath, "w1280");
+            return (
+              <div
+                key={it.id}
+                className={cn(
+                  "absolute inset-0 transition-opacity duration-700",
+                  i === active ? "opacity-100" : "opacity-0",
+                )}
+              >
+                {bd ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={bd}
+                    alt=""
+                    loading={i === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                    className="h-full w-full object-cover object-top"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-gradient-to-br from-ink-800 to-ink-950" />
+                )}
+              </div>
+            );
+          })}
+        </div>
         <div className="absolute inset-0 bg-side-fade" />
 
         {/* Active content */}

@@ -271,7 +271,7 @@ class TmdbProvider implements MediaProvider {
       const raw = await tmdbFetch<any>(`/movie/${id}`, {
         params: {
           append_to_response: "credits,videos,recommendations,similar,images",
-          include_image_language: "en,null",
+          include_image_language: "en,ta,hi,te,ml,kn,null",
         },
         revalidate: CACHE.detail,
       });
@@ -288,6 +288,7 @@ class TmdbProvider implements MediaProvider {
         collection: raw.belongs_to_collection
           ? { id: raw.belongs_to_collection.id, name: raw.belongs_to_collection.name }
           : null,
+        productionCompanies: mapCompanies(raw.production_companies),
         genres: raw.genres ?? [],
         cast: mapCast(raw.credits?.cast),
         crew: mapCrew(raw.credits?.crew),
@@ -311,7 +312,7 @@ class TmdbProvider implements MediaProvider {
         params: {
           append_to_response:
             "credits,videos,recommendations,similar,aggregate_credits,images",
-          include_image_language: "en,null",
+          include_image_language: "en,ta,hi,te,ml,kn,null",
         },
         revalidate: CACHE.detail,
       });
@@ -339,6 +340,7 @@ class TmdbProvider implements MediaProvider {
         similar: (raw.similar?.results ?? []).map((m: RawMovie) =>
           normalizeMedia(m, "tv"),
         ),
+        networks: mapCompanies(raw.networks),
         seasons: mapSeasons(raw.seasons),
         numberOfSeasons: raw.number_of_seasons,
         numberOfEpisodes: raw.number_of_episodes,
@@ -546,6 +548,15 @@ function pickTitleLogo(logos?: any[]): string | null {
       (b.width ?? 0) - (a.width ?? 0),
   );
   return pool[0]?.file_path ?? null;
+}
+
+function mapCompanies(
+  companies?: any[],
+): { name: string; logoPath?: string | null }[] {
+  return (companies ?? [])
+    .filter((c) => c?.name)
+    .slice(0, 4)
+    .map((c) => ({ name: c.name, logoPath: c.logo_path ?? null }));
 }
 
 function mapSeasons(seasons?: any[]): Season[] {
