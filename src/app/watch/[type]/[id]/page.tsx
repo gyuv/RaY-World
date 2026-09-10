@@ -3,15 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { provider } from "@/lib/providers";
 import { ProviderError, SeriesDetail } from "@/lib/providers/types";
-import { WatchPlayer } from "@/components/watch/WatchPlayer";
+import { PlayerStage } from "@/components/watch/PlayerStage";
 import { HistoryTracker } from "@/components/watch/HistoryTracker";
-import { getStreamSources } from "@/lib/stream";
+import { getPlayableSources } from "@/lib/stream-hls";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 import { EmptyState } from "@/components/EmptyState";
 import { getLanguageName } from "@/lib/config/languages";
 import { formatRating, formatRuntime, cn } from "@/lib/utils";
-import { stillUrl, titleLogoUrl } from "@/lib/images";
+import { backdropUrl, stillUrl, titleLogoUrl } from "@/lib/images";
 import { PlayIcon, ChevronRight } from "@/components/icons";
 
 export const revalidate = 43200;
@@ -43,7 +43,7 @@ export default async function WatchPage({
     if (type === "movie") {
       const detail = await provider.getMovie(numeric);
       if (!detail) notFound();
-      const servers = await getStreamSources("movie", detail.id);
+      const servers = await getPlayableSources("movie", detail.id);
       return (
         <div className="animate-fade-in">
           <HistoryTracker
@@ -56,11 +56,14 @@ export default async function WatchPage({
             }}
           />
           <div className="container-page py-6">
-            <WatchPlayer
+            <PlayerStage
               title={detail.title}
-              backdropPath={detail.backdropPath}
-              videos={detail.videos}
-              servers={servers}
+              subtitle={detail.year ? String(detail.year) : undefined}
+              poster={backdropUrl(detail.backdropPath, "w1280")}
+              logo={titleLogoUrl(detail.titleLogoPath, "w300")}
+              storageKey={`movie-${detail.id}`}
+              detailHref={`/movie/${detail.id}`}
+              sources={servers}
             />
             <div className="mt-5 flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -151,7 +154,7 @@ async function TvWatch({
     ? episodes.find((e) => e.episodeNumber === current.episodeNumber + 1)
     : undefined;
 
-  const servers = await getStreamSources(
+  const servers = await getPlayableSources(
     "tv",
     detail.id,
     seasonNumber,
@@ -175,12 +178,14 @@ async function TvWatch({
       )}
 
       <div className="container-page py-6">
-        <WatchPlayer
+        <PlayerStage
           title={detail.title}
-          backdropPath={detail.backdropPath}
-          stillPath={current?.stillPath}
-          videos={detail.videos}
-          servers={servers}
+          subtitle={`S${seasonNumber} · E${current?.episodeNumber ?? "—"}${current?.name ? `: ${current.name}` : ""}`}
+          poster={stillUrl(current?.stillPath, "w780") ?? backdropUrl(detail.backdropPath, "w1280")}
+          logo={titleLogoUrl(detail.titleLogoPath, "w300")}
+          storageKey={`tv-${detail.id}-${seasonNumber}-${current?.episodeNumber ?? 1}`}
+          detailHref={`/tv/${detail.id}`}
+          sources={servers}
         />
 
         <div className="mt-5 flex flex-wrap items-start justify-between gap-4">

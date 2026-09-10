@@ -17,12 +17,15 @@
  */
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com",
+  "script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' https://image.tmdb.org https://i.ytimg.com data: blob:",
   "media-src 'self' blob: https:",
   "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://peachify.top https://2embed.cc https://vidsrc.sbs",
-  "connect-src 'self'",
+  // The native HLS player (hls.js) fetches .m3u8 manifests + .ts/.m4s segments
+  // over HTTPS from whatever authorized CDN a source points at, so connect-src
+  // allows https:. Google Cast also talks to gstatic. blob: covers hls.js worker.
+  "connect-src 'self' https: blob: data:",
   "font-src 'self' data:",
   "object-src 'none'",
   "base-uri 'self'",
