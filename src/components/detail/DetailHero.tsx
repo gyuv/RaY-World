@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MovieDetail, SeriesDetail } from "@/lib/providers/types";
-import { backdropUrl } from "@/lib/images";
+import { backdropUrl, titleLogoUrl } from "@/lib/images";
 import { getLanguageName } from "@/lib/config/languages";
 import { formatRating, formatRuntime } from "@/lib/utils";
 import { Poster } from "@/components/Poster";
@@ -11,6 +11,7 @@ import { DetailBackdrop } from "./DetailBackdrop";
 
 export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
   const backdrop = backdropUrl(item.backdropPath, "w1280");
+  const titleLogo = titleLogoUrl(item.titleLogoPath, "w500");
   const rating = formatRating(item.rating);
   const language = getLanguageName(item.language);
   const watchHref = `/watch/${item.type}/${item.id}`;
@@ -61,9 +62,21 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
               </div>
             )}
 
-            <h1 className="font-display text-4xl font-black leading-[0.95] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:text-6xl tv:text-7xl">
-              {item.title}
-            </h1>
+            {titleLogo ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={titleLogo}
+                  alt={item.title}
+                  className="max-h-24 w-auto max-w-[85%] object-contain object-left drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)] sm:max-h-32 tv:max-h-40"
+                />
+                <h1 className="sr-only">{item.title}</h1>
+              </>
+            ) : (
+              <h1 className="font-display text-4xl font-black leading-[0.95] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:text-6xl tv:text-7xl">
+                {item.title}
+              </h1>
+            )}
             {item.originalTitle && (
               <p className="mt-1 text-sm text-white/50">{item.originalTitle}</p>
             )}

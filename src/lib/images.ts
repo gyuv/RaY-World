@@ -32,6 +32,14 @@ export function profileUrl(
   return `${IMAGE_BASE}/${size}${path}`;
 }
 
+export function titleLogoUrl(
+  path?: string | null,
+  size: "w300" | "w500" | "original" = "w500",
+): string | null {
+  if (!path) return null;
+  return `${IMAGE_BASE}/${size}${path}`;
+}
+
 export function providerLogoUrl(
   path?: string | null,
   size: "w45" | "w92" | "w154" = "w92",

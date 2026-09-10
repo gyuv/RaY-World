@@ -111,6 +111,8 @@ export interface MovieDetail extends MediaItem {
   type: "movie";
   runtime?: number;
   tagline?: string;
+  /** Official title-logo artwork (transparent), if available. */
+  titleLogoPath?: string | null;
   genres: { id: number; name: string }[];
   cast: CastMember[];
   crew: CrewMember[];
@@ -124,6 +126,8 @@ export interface MovieDetail extends MediaItem {
 export interface SeriesDetail extends MediaItem {
   type: "tv";
   tagline?: string;
+  /** Official title-logo artwork (transparent), if available. */
+  titleLogoPath?: string | null;
   genres: { id: number; name: string }[];
   cast: CastMember[];
   crew: CrewMember[];

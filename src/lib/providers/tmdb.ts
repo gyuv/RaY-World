@@ -269,7 +269,10 @@ class TmdbProvider implements MediaProvider {
   async getMovie(id: number): Promise<MovieDetail | null> {
     try {
       const raw = await tmdbFetch<any>(`/movie/${id}`, {
-        params: { append_to_response: "credits,videos,recommendations,similar" },
+        params: {
+          append_to_response: "credits,videos,recommendations,similar,images",
+          include_image_language: "en,null",
+        },
         revalidate: CACHE.detail,
       });
       const base = normalizeMedia({ ...raw, media_type: "movie" }, "movie");
@@ -278,6 +281,7 @@ class TmdbProvider implements MediaProvider {
         type: "movie",
         runtime: raw.runtime || undefined,
         tagline: raw.tagline || undefined,
+        titleLogoPath: pickTitleLogo(raw.images?.logos),
         status: raw.status,
         genres: raw.genres ?? [],
         cast: mapCast(raw.credits?.cast),
@@ -300,7 +304,9 @@ class TmdbProvider implements MediaProvider {
     try {
       const raw = await tmdbFetch<any>(`/tv/${id}`, {
         params: {
-          append_to_response: "credits,videos,recommendations,similar,aggregate_credits",
+          append_to_response:
+            "credits,videos,recommendations,similar,aggregate_credits,images",
+          include_image_language: "en,null",
         },
         revalidate: CACHE.detail,
       });
@@ -310,6 +316,7 @@ class TmdbProvider implements MediaProvider {
         ...base,
         type: "tv",
         tagline: raw.tagline || undefined,
+        titleLogoPath: pickTitleLogo(raw.images?.logos),
         status: raw.status,
         genres: raw.genres ?? [],
         cast: mapCast(credits?.cast),
@@ -504,6 +511,22 @@ function mapVideos(videos?: any[]): Video[] {
       name: v.name,
       official: v.official,
     }));
+}
+
+/** Pick the best title-logo file path (English first, then neutral; PNG over SVG). */
+function pickTitleLogo(logos?: any[]): string | null {
+  if (!logos?.length) return null;
+  const en = logos.filter((l) => l.iso_639_1 === "en");
+  const neutral = logos.filter((l) => l.iso_639_1 == null);
+  const pool = en.length ? en : neutral.length ? neutral : logos;
+  const rank = (l: any) => (String(l.file_path).endsWith(".svg") ? 0 : 1);
+  pool.sort(
+    (a, b) =>
+      rank(b) - rank(a) ||
+      (b.vote_average ?? 0) - (a.vote_average ?? 0) ||
+      (b.width ?? 0) - (a.width ?? 0),
+  );
+  return pool[0]?.file_path ?? null;
 }
 
 function mapSeasons(seasons?: any[]): Season[] {
