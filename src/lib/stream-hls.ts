@@ -5,8 +5,9 @@ export interface PlayableSource {
   id: string;
   label: string;
   url: string;
-  kind?: "stream" | "embed";
+  kind?: "stream" | "embed" | "file" | "hls";
   quality?: string;
+}ality?: string;
 }
 export async function getStreamSources(
   type: "movie" | "tv",
