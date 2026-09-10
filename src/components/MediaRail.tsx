@@ -34,21 +34,27 @@ export function MediaRail({
   return (
     <section className="container-page group/rail py-4">
       <div className="mb-3 flex items-end justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-bold tracking-tight sm:text-xl">
-            {href ? (
-              <Link href={href} className="hover:text-ray-300">
-                {title}
-              </Link>
-            ) : (
-              title
+        <div className="flex items-center gap-2.5">
+          <span
+            aria-hidden
+            className="h-6 w-1.5 flex-none rounded-full bg-[linear-gradient(180deg,#ffc933,#ec4899,#a855f7)]"
+          />
+          <div>
+            <h2 className="text-lg font-bold tracking-tight sm:text-xl">
+              {href ? (
+                <Link href={href} className="hover:text-ray-300">
+                  {title}
+                </Link>
+              ) : (
+                title
+              )}
+            </h2>
+            {accent && (
+              <p className="text-sm text-white/40" lang="ta">
+                {accent}
+              </p>
             )}
-          </h2>
-          {accent && (
-            <p className="text-sm text-white/40" lang="ta">
-              {accent}
-            </p>
-          )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {href && (

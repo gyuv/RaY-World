@@ -25,17 +25,17 @@ export function MediaCard({ item, className, priority }: MediaCardProps) {
         className,
       )}
     >
-      <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-ink-800 shadow-card ring-1 ring-white/5 transition duration-300 group-hover:ring-ray-400/40">
+      <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-ink-800 shadow-card ring-1 ring-white/5 transition duration-300 group-hover:-translate-y-1 group-hover:shadow-glow group-hover:ring-2 group-hover:ring-ray-400/60">
         <Poster
           path={item.posterPath}
           alt={item.title}
           priority={priority}
-          className="transition duration-500 group-hover:scale-105"
+          className="transition duration-500 group-hover:scale-110"
         />
 
         {/* Top meta */}
         <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-2">
-          <span className="inline-flex items-center gap-1 rounded-md bg-ink-950/70 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/80 backdrop-blur">
+          <span className="inline-flex items-center gap-1 rounded-md bg-ink-950/70 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/80 ring-1 ring-white/10 backdrop-blur">
             {item.type === "tv" ? (
               <TvIcon className="text-[0.9em]" />
             ) : (
@@ -47,24 +47,36 @@ export function MediaCard({ item, className, priority }: MediaCardProps) {
         </div>
 
         {/* Hover overlay */}
-        <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100">
-          <div className="flex items-center gap-2 p-3">
-            <span className="btn-primary pointer-events-none !px-3 !py-1.5 text-xs">
-              <PlayIcon /> Play
+        <div className="absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100">
+          <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/20 to-ink-950/30" />
+
+          {/* Center play */}
+          <div className="absolute inset-0 grid place-items-center">
+            <span className="grid h-12 w-12 scale-75 place-items-center rounded-full bg-ray-gradient text-ink-950 shadow-glow transition duration-300 group-hover:scale-100">
+              <PlayIcon className="text-lg" />
             </span>
-            <div className="pointer-events-auto ml-auto">
-              <WatchlistButton
-                entry={{
-                  id: item.id,
-                  type: item.type,
-                  title: item.title,
-                  posterPath: item.posterPath,
-                  year: item.year,
-                  rating: item.rating,
-                }}
-              />
-            </div>
           </div>
+
+          {/* Watchlist */}
+          <div className="pointer-events-auto absolute bottom-2 right-2">
+            <WatchlistButton
+              entry={{
+                id: item.id,
+                type: item.type,
+                title: item.title,
+                posterPath: item.posterPath,
+                year: item.year,
+                rating: item.rating,
+              }}
+            />
+          </div>
+
+          {/* Genre/lang hint bottom-left */}
+          {language && (
+            <span className="pointer-events-none absolute bottom-3 left-3 rounded-md bg-ink-950/70 px-1.5 py-0.5 text-[10px] font-semibold text-white/80 ring-1 ring-white/10 backdrop-blur">
+              {language}
+            </span>
+          )}
         </div>
       </div>
 
