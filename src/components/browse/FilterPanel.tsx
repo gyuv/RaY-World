@@ -176,7 +176,7 @@ export function FilterPanel() {
     <>
       {/* Desktop sidebar */}
       <aside className="hidden lg:block">
-        <div className="card-surface sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto rail-scroll p-5">
+        <div className="card-surface sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rail-scroll p-5">
           <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-white/60">
             Filters
           </h2>

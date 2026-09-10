@@ -45,7 +45,7 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
 
   return (
     <section
-      className="relative -mt-16 sm:-mt-20"
+      className="relative -mt-20 sm:-mt-24"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -78,8 +78,8 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
         <div className="absolute inset-0 bg-gradient-to-b from-ink-950/55 via-ink-950/75 to-ink-950" />
       </div>
 
-      {/* Hero stage */}
-      <div className="relative h-[68vh] min-h-[460px] w-full overflow-hidden">
+      {/* Hero stage — fills the screen */}
+      <div className="relative h-[100svh] min-h-[600px] w-full overflow-hidden">
         {items.map((it, i) => {
           const bd = backdropUrl(it.backdropPath, "w1280");
           return (

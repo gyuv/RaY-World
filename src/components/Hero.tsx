@@ -20,7 +20,7 @@ export function Hero({ item }: { item: MediaItem }) {
     .slice(0, 3);
 
   return (
-    <section className="relative -mt-16 sm:-mt-20">
+    <section className="relative -mt-20 sm:-mt-24">
       <div className="relative h-[62vh] min-h-[440px] w-full overflow-hidden sm:h-[68vh]">
         {backdrop ? (
           <Image
