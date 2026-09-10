@@ -17,10 +17,21 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
   const language = getLanguageName(item.language);
   const watchHref = `/watch/${item.type}/${item.id}`;
 
-  const trailer =
-    item.videos.find((v) => v.type === "Trailer" && v.official) ??
-    item.videos.find((v) => v.type === "Trailer") ??
-    item.videos.find((v) => v.type === "Teaser");
+  // Ordered candidate trailer keys (best first). The backdrop tries each in
+  // turn and auto-skips any YouTube refuses to embed, so a blocked official
+  // trailer no longer leaves the hero blank.
+  const trailerKeys = Array.from(
+    new Set(
+      [
+        ...item.videos.filter((v) => v.type === "Trailer" && v.official),
+        ...item.videos.filter((v) => v.type === "Trailer"),
+        ...item.videos.filter((v) => v.type === "Teaser"),
+        ...item.videos,
+      ]
+        .filter((v) => v.site === "YouTube" && v.key)
+        .map((v) => v.key),
+    ),
+  );
 
   const metaBits: string[] = [];
   if (item.year) metaBits.push(String(item.year));
@@ -38,7 +49,7 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
     <section className="relative -mt-20 sm:-mt-24">
       {/* Backdrop — image, then the trailer plays sharp behind the hero */}
       <div className="relative h-[52vh] min-h-[360px] w-full overflow-hidden sm:h-[64vh]">
-        <DetailBackdrop backdrop={backdrop} trailerKey={trailer?.key} />
+        <DetailBackdrop backdrop={backdrop} trailerKeys={trailerKeys} />
       </div>
 
       {/* Content */}

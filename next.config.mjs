@@ -17,9 +17,9 @@
  */
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' https://image.tmdb.org data: blob:",
+  "img-src 'self' https://image.tmdb.org https://i.ytimg.com data: blob:",
   "media-src 'self' blob: https:",
   "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://peachify.top https://2embed.cc https://vidsrc.sbs",
   "connect-src 'self'",
