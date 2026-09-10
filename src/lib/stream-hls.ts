@@ -53,3 +53,4 @@ export async function getStreamSources(
     }
   ];
 }
+export { getStreamSources as getPlayableSources };
