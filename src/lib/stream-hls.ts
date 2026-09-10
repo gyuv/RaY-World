@@ -1,5 +1,4 @@
-// src/lib/stream.ts
-import { StreamSource } from "@/lib/providers/types";
+// src/lib/stream-hls.ts
 
 export interface PlayableSource {
   id: string;
@@ -7,14 +6,14 @@ export interface PlayableSource {
   url: string;
   kind?: "stream" | "embed" | "file" | "hls";
   quality?: string;
-}ality?: string;
 }
+
 export async function getStreamSources(
   type: "movie" | "tv",
   id: number | string,
   season?: number,
   episode?: number,
-): Promise<StreamSource[]> {
+): Promise<PlayableSource[]> {
   if (!id) return [];
 
   const s = season || 1;
@@ -61,4 +60,5 @@ export async function getStreamSources(
     }
   ];
 }
+
 export { getStreamSources as getPlayableSources };
