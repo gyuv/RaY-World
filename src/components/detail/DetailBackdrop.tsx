@@ -45,12 +45,20 @@ export function DetailBackdrop({
 
       {showVideo && trailerKey && (
         <div className="absolute inset-0 animate-[fade-in_1.2s_ease-out]">
+          {/* Sharp trailer, sized to COVER so YouTube's controls/title sit
+              off-screen (cropped) — no blur, no visible play/next chrome. */}
           <iframe
             title="Trailer preview"
             aria-hidden
             tabIndex={-1}
-            className="pointer-events-none absolute left-1/2 top-1/2 h-[135%] w-[135%] -translate-x-1/2 -translate-y-1/2 scale-125 blur-[3px]"
-            src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3`}
+            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            style={{
+              width: "100vw",
+              height: "56.25vw",
+              minHeight: "100%",
+              minWidth: "177.78vh",
+            }}
+            src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&fs=0`}
             allow="autoplay; encrypted-media"
           />
         </div>

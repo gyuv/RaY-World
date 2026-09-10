@@ -46,15 +46,15 @@ export function Navbar() {
       className={cn(
         "sticky top-0 z-40 transition-colors duration-300",
         scrolled || menuOpen
-          ? "border-b border-white/10 bg-ink-950/85 backdrop-blur-xl"
-          : "bg-gradient-to-b from-ink-950/90 to-transparent",
+          ? "border-b border-white/10 bg-ink-950/70 backdrop-blur-xl"
+          : "bg-gradient-to-b from-ink-950/70 via-ink-950/20 to-transparent",
       )}
     >
       <div className="container-page flex h-16 items-center gap-4 sm:h-20">
         <Link
           href="/"
           aria-label="RAYWORLD home"
-          className="rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ray-400"
+          className="rounded-xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ray-400"
         >
           <BrandImage
             src="/brand/footer.png"
@@ -64,16 +64,17 @@ export function Navbar() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        {/* Floating glass nav pill */}
+        <nav className="mx-auto hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.06] px-1.5 py-1 backdrop-blur-xl lg:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "rounded-full px-3 py-1.5 text-sm font-medium transition",
+                "rounded-full px-3.5 py-1.5 text-sm font-medium transition",
                 isActive(link.href)
-                  ? "bg-white/10 text-white"
-                  : "text-white/65 hover:text-white",
+                  ? "bg-ray-gradient text-ink-950 shadow-glow"
+                  : "text-white/75 hover:bg-white/10 hover:text-white",
               )}
             >
               {link.label}
@@ -81,7 +82,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="ml-auto hidden w-full max-w-sm lg:block">
+        <div className="ml-auto hidden w-full max-w-xs lg:block">
           <SearchBox variant="compact" />
         </div>
 

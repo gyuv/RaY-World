@@ -33,9 +33,9 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
   if (language) metaBits.push(language);
 
   return (
-    <section className="relative">
-      {/* Backdrop — image, then the trailer plays muted + blurred behind it */}
-      <div className="relative h-[46vh] min-h-[320px] w-full overflow-hidden sm:h-[56vh]">
+    <section className="relative -mt-16 sm:-mt-20">
+      {/* Backdrop — image, then the trailer plays sharp behind the hero */}
+      <div className="relative h-[52vh] min-h-[360px] w-full overflow-hidden sm:h-[64vh]">
         <DetailBackdrop backdrop={backdrop} trailerKey={trailer?.key} />
       </div>
 
