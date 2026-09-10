@@ -20,48 +20,50 @@ export async function getStreamSources(
   const s = season || 1;
   const e = episode || 1;
 
-  const path = type === "movie" ? `movie/${id}` : `tv/${id}/${s}/${e}`;
+  // Path helpers for different provider URL schemas
+  const standardPath = type === "movie" ? `movie/${id}` : `tv/${id}/${s}/${e}`;
+  const twoEmbedPath = type === "movie" ? `embed/${id}` : `embedtv/${id}&s=${s}&e=${e}`;
 
   return [
     { 
-      id: "server-mbply", 
+      id: "server-vidlink", 
       label: "Shih Tzu", 
-      url: `https://info.movieboxnoob.cc/video/${id}/video_1080p.m3u8`, 
-      kind: "stream",
+      url: `https://vidlink.pro/${standardPath}`, 
+      kind: "embed",
       region: "US"
     },
     { 
-      id: "server-zetply", 
+      id: "server-peachify", 
       label: "Golden Retriever", 
-      url: `https://peachify.top/embed/${path}`, 
+      url: `https://peachify.pro/embed/${standardPath}`, 
       kind: "embed",
       region: "US"
     },
     { 
-      id: "server-orvid", 
+      id: "server-2embed", 
       label: "German Shepherd", 
-      url: `https://2embed.cc/embed/${path}`, 
+      url: `https://www.2embed.cc/${twoEmbedPath}`, 
       kind: "embed",
       region: "US"
     },
     { 
-      id: "server-qsply", 
+      id: "server-vidsrc-icu", 
       label: "Husky", 
-      url: `https://vidsrc.sbs/embed/${path}?provider=free`, 
+      url: `https://vidsrc.icu/embed/${standardPath}`, 
       kind: "embed",
       region: "US"
     },
     {
-      id: "server-vidlnx",
+      id: "server-vidsrc-cc",
       label: "Beagle",
-      url: `https://vidlink.pro/${path}`,
+      url: `https://vidsrc.cc/v2/embed/${standardPath}`,
       kind: "embed",
       region: "JP"
     },
     {
-      id: "server-vnst-alfa",
+      id: "server-vidsrc-vip",
       label: "Pug",
-      url: `https://vidsrc.vip/embed/${path}`,
+      url: `https://vidsrc.vip/embed/${standardPath}`,
       kind: "embed",
       region: "BR"
     }
