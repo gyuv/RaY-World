@@ -14,21 +14,25 @@ html {
 }
 
 body {
-  @apply bg-ink-950 text-white/90 antialiased;
+  @apply text-white/90 antialiased;
+  /* Lifted slate base + soft cool/rose tints — an airy, frosted ambient that
+     shows on every page (not just home/detail), still dark enough for white
+     text. */
+  background-color: #0a0f1e;
   background-image: radial-gradient(
-      1300px 650px at 12% -12%,
-      rgba(31, 107, 255, 0.18),
+      1300px 720px at 50% -14%,
+      rgba(150, 170, 235, 0.18),
       transparent 60%
     ),
     radial-gradient(
-      1000px 560px at 100% 0%,
-      rgba(245, 182, 12, 0.12),
+      1000px 620px at 8% 6%,
+      rgba(236, 72, 153, 0.1),
       transparent 55%
     ),
     radial-gradient(
-      900px 900px at 50% 120%,
-      rgba(10, 79, 224, 0.14),
-      transparent 60%
+      1000px 620px at 100% 14%,
+      rgba(168, 85, 247, 0.12),
+      transparent 55%
     );
   background-attachment: fixed;
 }

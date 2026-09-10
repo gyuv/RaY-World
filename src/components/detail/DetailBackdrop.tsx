@@ -64,8 +64,8 @@ export function DetailBackdrop({
         </div>
       )}
 
-      {/* Legibility overlays */}
-      <div className="absolute inset-0 bg-ink-950/30" />
+      {/* Legibility overlays — light touch so the trailer stays bright */}
+      <div className="absolute inset-0 bg-ink-950/10" />
       <div className="absolute inset-0 bg-hero-fade" />
       <div className="absolute inset-0 bg-side-fade" />
     </div>

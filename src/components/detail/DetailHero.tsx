@@ -8,6 +8,7 @@ import { PlayIcon, StarIcon } from "@/components/icons";
 import { WatchlistButton } from "@/components/WatchlistButton";
 import { TrailerButton } from "./TrailerButton";
 import { DetailBackdrop } from "./DetailBackdrop";
+import { DetailInfoPanel } from "./DetailInfoPanel";
 
 export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
   const backdrop = backdropUrl(item.backdropPath, "w1280");
@@ -128,6 +129,8 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
               <TrailerButton videos={item.videos} />
             </div>
           </div>
+
+          <DetailInfoPanel item={item} />
         </div>
       </div>
     </section>

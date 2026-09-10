@@ -88,9 +88,9 @@ const config: Config = {
         "gold-shine":
           "linear-gradient(100deg, #b4770a 0%, #ffe58a 20%, #fff6d6 30%, #ffe58a 40%, #d99406 60%, #ffe58a 100%)",
         "hero-fade":
-          "linear-gradient(to top, rgba(2,6,15,1) 0%, rgba(2,6,15,0.6) 40%, rgba(2,6,15,0.1) 75%, rgba(2,6,15,0) 100%)",
+          "linear-gradient(to top, rgba(10,15,30,1) 0%, rgba(10,15,30,0.55) 42%, rgba(10,15,30,0.08) 78%, rgba(10,15,30,0) 100%)",
         "side-fade":
-          "linear-gradient(to right, rgba(2,6,15,0.95) 0%, rgba(2,6,15,0.6) 40%, rgba(2,6,15,0) 100%)",
+          "linear-gradient(to right, rgba(10,15,30,0.9) 0%, rgba(10,15,30,0.45) 42%, rgba(10,15,30,0) 100%)",
       },
       keyframes: {
         "fade-in": {

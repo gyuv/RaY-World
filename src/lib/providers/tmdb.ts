@@ -283,6 +283,11 @@ class TmdbProvider implements MediaProvider {
         tagline: raw.tagline || undefined,
         titleLogoPath: pickTitleLogo(raw.images?.logos),
         status: raw.status,
+        budget: raw.budget || undefined,
+        revenue: raw.revenue || undefined,
+        collection: raw.belongs_to_collection
+          ? { id: raw.belongs_to_collection.id, name: raw.belongs_to_collection.name }
+          : null,
         genres: raw.genres ?? [],
         cast: mapCast(raw.credits?.cast),
         crew: mapCrew(raw.credits?.crew),
@@ -450,6 +455,20 @@ class TmdbProvider implements MediaProvider {
     // "Latest" = most recent releases up to today, sorted newest first.
     // The date cap and zero vote-floor are applied inside discover().
     return this.discover({ ...options, sort: "latest" });
+  }
+
+  async getCollection(id: number): Promise<MediaItem[]> {
+    try {
+      const raw = await tmdbFetch<{ parts?: RawMovie[] }>(`/collection/${id}`, {
+        revalidate: CACHE.detail,
+      });
+      return (raw.parts ?? [])
+        .map((m) => normalizeMedia(m, "movie"))
+        .filter((m) => m.posterPath)
+        .sort((a, b) => (a.year ?? 0) - (b.year ?? 0));
+    } catch {
+      return [];
+    }
   }
 
   async getWatchProviders(region = "IN"): Promise<WatchProviderInfo[]> {

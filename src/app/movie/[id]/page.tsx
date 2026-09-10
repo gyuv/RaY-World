@@ -6,6 +6,7 @@ import { DetailHero } from "@/components/detail/DetailHero";
 import { PageBackdrop } from "@/components/PageBackdrop";
 import { backdropUrl } from "@/lib/images";
 import { CastRow } from "@/components/detail/CastRow";
+import { TrailersRow } from "@/components/detail/TrailersRow";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 
@@ -51,6 +52,12 @@ export default async function MoviePage({
     .filter((c) => c.job === "Writer" || c.job === "Screenplay")
     .slice(0, 2);
 
+  const collectionItems = detail.collection
+    ? (await provider.getCollection(detail.collection.id)).filter(
+        (m) => m.id !== detail.id,
+      )
+    : [];
+
   return (
     <div className="animate-fade-in">
       <PageBackdrop src={backdropUrl(detail.backdropPath, "w1280")} />
@@ -68,6 +75,15 @@ export default async function MoviePage({
       />
 
       <CastRow cast={detail.cast} />
+
+      <TrailersRow videos={detail.videos} />
+
+      {collectionItems.length > 0 && detail.collection && (
+        <MediaRail
+          title={`Part of ${detail.collection.name}`}
+          items={collectionItems}
+        />
+      )}
 
       {detail.recommendations.length > 0 && (
         <MediaRail

@@ -68,14 +68,20 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
                   alt=""
                   loading={i === 0 ? "eager" : "lazy"}
                   decoding="async"
-                  className="h-full w-full scale-125 object-cover opacity-40 blur-[64px]"
+                  className="h-full w-full scale-125 object-cover opacity-60 blur-[60px]"
                 />
               )}
             </div>
           );
         })}
-        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_-10%,rgba(31,107,255,0.10),transparent_55%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink-950/55 via-ink-950/75 to-ink-950" />
+        <div className="absolute inset-0 bg-white/[0.04]" />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(10,15,30,0.20), rgba(10,15,30,0.45) 55%, rgba(10,15,30,0.82))",
+          }}
+        />
       </div>
 
       {/* Hero stage — fills the screen */}

@@ -120,6 +120,9 @@ export interface MovieDetail extends MediaItem {
   recommendations: MediaItem[];
   similar: MediaItem[];
   status?: string;
+  budget?: number;
+  revenue?: number;
+  collection?: { id: number; name: string } | null;
 }
 
 /** Full detail record for a TV series. */
@@ -212,6 +215,8 @@ export interface MediaProvider {
   getLatest(options: FeedOptions): Promise<Paginated<MediaItem>>;
   /** TMDB watch providers (id, name, logo_path) available in a region. */
   getWatchProviders(region?: string): Promise<WatchProviderInfo[]>;
+  /** Titles that belong to a movie collection. */
+  getCollection(id: number): Promise<MediaItem[]>;
 }
 
 export interface WatchProviderInfo {

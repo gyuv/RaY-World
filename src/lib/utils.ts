@@ -79,3 +79,20 @@ export function unique<T, K>(items: T[], key: (item: T) => K): T[] {
 }
 
 export const CURRENT_YEAR = new Date().getFullYear();
+
+export function formatCurrency(n?: number): string | undefined {
+  if (!n || n <= 0) return undefined;
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
+  return `$${n.toLocaleString()}`;
+}
+
+export function formatDate(iso?: string): string | undefined {
+  if (!iso) return undefined;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return undefined;
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}

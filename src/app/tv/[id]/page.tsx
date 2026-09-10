@@ -6,6 +6,7 @@ import { ProviderError } from "@/lib/providers/types";
 import { DetailHero } from "@/components/detail/DetailHero";
 import { PageBackdrop } from "@/components/PageBackdrop";
 import { CastRow } from "@/components/detail/CastRow";
+import { TrailersRow } from "@/components/detail/TrailersRow";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 import { FactsBlock } from "@/app/movie/[id]/page";
@@ -102,6 +103,8 @@ export default async function TvPage({ params }: { params: { id: string } }) {
       )}
 
       <CastRow cast={detail.cast} />
+
+      <TrailersRow videos={detail.videos} />
 
       {detail.recommendations.length > 0 && (
         <MediaRail
