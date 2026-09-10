@@ -21,7 +21,7 @@ export function EmptyState({
   showDiscovery = true,
 }: EmptyStateProps) {
   return (
-    <div className="mx-auto max-w-xl rounded-3xl border border-white/10 bg-ink-850/60 p-8 text-center sm:p-12">
+    <div className="glass mx-auto max-w-xl p-8 text-center sm:p-12">
       <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-ray-gradient/20">
         <span className="grid h-full w-full place-items-center rounded-2xl bg-ink-900 text-2xl">
           🎬

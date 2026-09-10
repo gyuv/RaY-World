@@ -27,7 +27,7 @@ export async function ProvidersStrip() {
         </p>
       </div>
 
-      <div className="rail-scroll -mx-1 flex gap-5 overflow-x-auto px-1 pb-3 sm:gap-7">
+      <div className="glass rail-scroll -mx-1 flex gap-5 overflow-x-auto p-4 sm:gap-7">
         {PROVIDERS.map((p) => (
           <Link
             key={p.slug}

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { MovieDetail, SeriesDetail } from "@/lib/providers/types";
 import { backdropUrl } from "@/lib/images";
 import { getLanguageName } from "@/lib/config/languages";
@@ -8,12 +7,18 @@ import { Poster } from "@/components/Poster";
 import { PlayIcon, StarIcon } from "@/components/icons";
 import { WatchlistButton } from "@/components/WatchlistButton";
 import { TrailerButton } from "./TrailerButton";
+import { DetailBackdrop } from "./DetailBackdrop";
 
 export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
   const backdrop = backdropUrl(item.backdropPath, "w1280");
   const rating = formatRating(item.rating);
   const language = getLanguageName(item.language);
   const watchHref = `/watch/${item.type}/${item.id}`;
+
+  const trailer =
+    item.videos.find((v) => v.type === "Trailer" && v.official) ??
+    item.videos.find((v) => v.type === "Trailer") ??
+    item.videos.find((v) => v.type === "Teaser");
 
   const metaBits: string[] = [];
   if (item.year) metaBits.push(String(item.year));
@@ -29,21 +34,9 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
 
   return (
     <section className="relative">
-      {/* Backdrop */}
+      {/* Backdrop — image, then the trailer plays muted + blurred behind it */}
       <div className="relative h-[46vh] min-h-[320px] w-full overflow-hidden sm:h-[56vh]">
-        {backdrop ? (
-          <Image
-            src={backdrop}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-top"
-          />
-        ) : (
-          <div className="h-full w-full bg-gradient-to-br from-ink-800 to-ink-950" />
-        )}
-        <div className="absolute inset-0 bg-hero-fade" />
+        <DetailBackdrop backdrop={backdrop} trailerKey={trailer?.key} />
       </div>
 
       {/* Content */}
