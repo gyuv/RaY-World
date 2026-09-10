@@ -1,6 +1,13 @@
 // src/lib/stream.ts
 import { StreamSource } from "@/lib/providers/types";
 
+export interface PlayableSource {
+  id: string;
+  label: string;
+  url: string;
+  kind?: "stream" | "embed";
+  quality?: string;
+}
 export async function getStreamSources(
   type: "movie" | "tv",
   id: number | string,
