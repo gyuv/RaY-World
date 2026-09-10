@@ -6,6 +6,7 @@ export interface PlayableSource {
   url: string;
   kind?: "stream" | "embed" | "file" | "hls";
   quality?: string;
+  region?: string;
 }
 
 export async function getStreamSources(
@@ -26,37 +27,43 @@ export async function getStreamSources(
       id: "server-mbply", 
       label: "Shih Tzu", 
       url: `https://info.movieboxnoob.cc/video/${id}/video_1080p.m3u8`, 
-      kind: "stream"
+      kind: "stream",
+      region: "US"
     },
     { 
       id: "server-zetply", 
       label: "Golden Retriever", 
       url: `https://peachify.top/embed/${path}`, 
-      kind: "embed" 
+      kind: "embed",
+      region: "US"
     },
     { 
       id: "server-orvid", 
       label: "German Shepherd", 
       url: `https://2embed.cc/embed/${path}`, 
-      kind: "embed" 
+      kind: "embed",
+      region: "US"
     },
     { 
       id: "server-qsply", 
       label: "Husky", 
       url: `https://vidsrc.sbs/embed/${path}?provider=free`, 
-      kind: "embed" 
+      kind: "embed",
+      region: "US"
     },
     {
       id: "server-vidlnx",
       label: "Beagle",
       url: `https://vidlink.pro/${path}`,
-      kind: "embed"
+      kind: "embed",
+      region: "JP"
     },
     {
       id: "server-vnst-alfa",
       label: "Pug",
       url: `https://vidsrc.vip/embed/${path}`,
-      kind: "embed"
+      kind: "embed",
+      region: "BR"
     }
   ];
 }
