@@ -7,6 +7,8 @@ import { ProviderNotice } from "@/components/ProviderNotice";
 import { ContinueWatchingRail } from "@/components/ContinueWatchingRail";
 import { LanguageQuickNav } from "@/components/LanguageQuickNav";
 import { ProvidersStrip } from "@/components/ProvidersStrip";
+import { PageBackdrop } from "@/components/PageBackdrop";
+import { backdropUrl } from "@/lib/images";
 
 // Revalidate the homepage feed periodically (spec §19: long cache for feeds).
 export const revalidate = 3600;
@@ -28,6 +30,7 @@ export default async function HomePage() {
 
   return (
     <div className="animate-fade-in">
+      <PageBackdrop src={backdropUrl(hero?.backdropPath, "w1280")} />
       {hero && <Hero item={hero} />}
 
       <div className="relative z-10 -mt-6 space-y-2">

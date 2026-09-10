@@ -61,7 +61,7 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
               </div>
             )}
 
-            <h1 className="text-3xl font-black leading-tight tracking-tight sm:text-5xl">
+            <h1 className="font-display text-4xl font-black leading-[0.95] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:text-6xl tv:text-7xl">
               {item.title}
             </h1>
             {item.originalTitle && (

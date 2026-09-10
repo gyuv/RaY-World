@@ -4,11 +4,12 @@ import { notFound } from "next/navigation";
 import { provider } from "@/lib/providers";
 import { ProviderError } from "@/lib/providers/types";
 import { DetailHero } from "@/components/detail/DetailHero";
+import { PageBackdrop } from "@/components/PageBackdrop";
 import { CastRow } from "@/components/detail/CastRow";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 import { FactsBlock } from "@/app/movie/[id]/page";
-import { posterUrl } from "@/lib/images";
+import { posterUrl, backdropUrl } from "@/lib/images";
 
 export const revalidate = 43200;
 
@@ -44,6 +45,7 @@ export default async function TvPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="animate-fade-in">
+      <PageBackdrop src={backdropUrl(detail.backdropPath, "w1280")} />
       <DetailHero item={detail} />
 
       <FactsBlock

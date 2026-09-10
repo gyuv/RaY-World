@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { provider } from "@/lib/providers";
 import { ProviderError } from "@/lib/providers/types";
 import { DetailHero } from "@/components/detail/DetailHero";
+import { PageBackdrop } from "@/components/PageBackdrop";
+import { backdropUrl } from "@/lib/images";
 import { CastRow } from "@/components/detail/CastRow";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
@@ -51,6 +53,7 @@ export default async function MoviePage({
 
   return (
     <div className="animate-fade-in">
+      <PageBackdrop src={backdropUrl(detail.backdropPath, "w1280")} />
       <DetailHero item={detail} />
 
       <FactsBlock

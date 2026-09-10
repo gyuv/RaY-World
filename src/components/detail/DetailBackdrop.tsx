@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 /**
  * Cinematic detail-page backdrop: shows the backdrop image, then (after a beat)
@@ -33,14 +34,17 @@ export function DetailBackdrop({
           fill
           priority
           sizes="100vw"
-          className="object-cover object-top"
+          className={cn(
+            "object-cover object-top transition-opacity duration-1000",
+            showVideo && trailerKey ? "opacity-0" : "opacity-100",
+          )}
         />
       ) : (
         <div className="h-full w-full bg-gradient-to-br from-ink-800 to-ink-950" />
       )}
 
       {showVideo && trailerKey && (
-        <div className="absolute inset-0 animate-[fade-in_1s_ease-out] opacity-70">
+        <div className="absolute inset-0 animate-[fade-in_1.2s_ease-out]">
           <iframe
             title="Trailer preview"
             aria-hidden
