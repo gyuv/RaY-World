@@ -145,7 +145,7 @@ export function DetailBackdrop({
   // Fade the sharp imagery to transparent at the bottom so it dissolves into
   // the page's blurred wash — no hard seam between the hero and the sections.
   const fadeMask =
-    "linear-gradient(to bottom, #000 0%, #000 55%, transparent 96%)";
+    "linear-gradient(to bottom, #000 0%, #000 28%, rgba(0,0,0,0.35) 66%, transparent 90%)";
 
   return (
     <div className="absolute inset-0 overflow-hidden">

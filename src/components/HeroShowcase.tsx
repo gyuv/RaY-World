@@ -90,10 +90,13 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
         <div
           className="absolute inset-0"
           style={{
+            // Long, early-completing fade: the sharp image dissolves gradually
+            // into the blurred wash and is fully gone by 90%, so there is no
+            // crisp line where the banner meets the page.
             maskImage:
-              "linear-gradient(to bottom, #000 0%, #000 60%, transparent 98%)",
+              "linear-gradient(to bottom, #000 0%, #000 28%, rgba(0,0,0,0.35) 66%, transparent 90%)",
             WebkitMaskImage:
-              "linear-gradient(to bottom, #000 0%, #000 60%, transparent 98%)",
+              "linear-gradient(to bottom, #000 0%, #000 28%, rgba(0,0,0,0.35) 66%, transparent 90%)",
           }}
         >
           {items.map((it, i) => {

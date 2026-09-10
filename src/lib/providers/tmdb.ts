@@ -272,6 +272,11 @@ class TmdbProvider implements MediaProvider {
         params: {
           append_to_response: "credits,videos,recommendations,similar,images",
           include_image_language: "en,ta,hi,te,ml,kn,null",
+          // Without this TMDB returns only English trailers, so Tamil/Indian
+          // titles look like they have "no trailer". Include the languages we
+          // support (+ null = language-agnostic uploads) so every title's
+          // trailers surface in the banner and the Trailers row.
+          include_video_language: "en,ta,hi,te,ml,kn,bn,mr,gu,pa,ur,ja,ko,null",
         },
         revalidate: CACHE.detail,
       });
@@ -313,6 +318,7 @@ class TmdbProvider implements MediaProvider {
           append_to_response:
             "credits,videos,recommendations,similar,aggregate_credits,images",
           include_image_language: "en,ta,hi,te,ml,kn,null",
+          include_video_language: "en,ta,hi,te,ml,kn,bn,mr,gu,pa,ur,ja,ko,null",
         },
         revalidate: CACHE.detail,
       });
