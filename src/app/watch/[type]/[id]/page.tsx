@@ -11,7 +11,7 @@ import { ProviderNotice } from "@/components/ProviderNotice";
 import { EmptyState } from "@/components/EmptyState";
 import { getLanguageName } from "@/lib/config/languages";
 import { formatRating, formatRuntime, cn } from "@/lib/utils";
-import { stillUrl } from "@/lib/images";
+import { stillUrl, titleLogoUrl } from "@/lib/images";
 import { PlayIcon, ChevronRight } from "@/components/icons";
 
 export const revalidate = 43200;
@@ -64,9 +64,21 @@ export default async function WatchPage({
             />
             <div className="mt-5 flex flex-wrap items-start justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-black tracking-tight">
-                  {detail.title}
-                </h1>
+                {titleLogoUrl(detail.titleLogoPath, "w300") ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={titleLogoUrl(detail.titleLogoPath, "w300")!}
+                      alt={detail.title}
+                      className="max-h-14 w-auto max-w-[70%] object-contain object-left"
+                    />
+                    <h1 className="sr-only">{detail.title}</h1>
+                  </>
+                ) : (
+                  <h1 className="text-2xl font-black tracking-tight">
+                    {detail.title}
+                  </h1>
+                )}
                 <div className="mt-1 flex flex-wrap items-center gap-x-3 text-sm text-white/60">
                   {detail.year && <span>{detail.year}</span>}
                   {formatRuntime(detail.runtime) && (

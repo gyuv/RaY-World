@@ -1,14 +1,14 @@
 import { provider } from "@/lib/providers";
 import { HOME_SECTIONS } from "@/lib/config/home-sections";
-import { fetchHomeSections, pickHero } from "@/lib/catalog";
-import { Hero } from "@/components/Hero";
+import { fetchHomeSections } from "@/lib/catalog";
+import { rankMedia } from "@/lib/ranking";
+import { unique } from "@/lib/utils";
+import { HeroShowcase, FeaturedItem } from "@/components/HeroShowcase";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 import { ContinueWatchingRail } from "@/components/ContinueWatchingRail";
 import { LanguageQuickNav } from "@/components/LanguageQuickNav";
 import { ProvidersStrip } from "@/components/ProvidersStrip";
-import { PageBackdrop } from "@/components/PageBackdrop";
-import { backdropUrl } from "@/lib/images";
 
 // Revalidate the homepage feed periodically (spec §19: long cache for feeds).
 export const revalidate = 3600;
@@ -24,14 +24,50 @@ export default async function HomePage() {
     return <ProviderNotice reason="upstream" />;
   }
 
-  // Hero comes from the first (Tamil trending) rail, Tamil-weighted.
-  const heroPool = resolved.flatMap((r) => r.items).slice(0, 30);
-  const hero = pickHero(heroPool);
+  // Build the rotating featured set: Tamil-weighted, needs backdrop + overview.
+  // Fetch each one's detail (cached) to get the official title-logo artwork.
+  const pool = unique(
+    resolved.flatMap((r) => r.items).filter((i) => i.backdropPath && i.overview),
+    (i) => `${i.type}:${i.id}`,
+  );
+  const candidates = rankMedia(pool, {
+    preferLanguage: "ta",
+    weights: { language: 0.5 },
+  }).slice(0, 6);
+
+  const featured = (
+    await Promise.all(
+      candidates.map(async (c): Promise<FeaturedItem | null> => {
+        try {
+          const d =
+            c.type === "movie"
+              ? await provider.getMovie(c.id)
+              : await provider.getSeries(c.id);
+          if (!d) return null;
+          return {
+            id: d.id,
+            type: d.type,
+            title: d.title,
+            overview: d.overview,
+            backdropPath: d.backdropPath,
+            posterPath: d.posterPath,
+            titleLogoPath: d.titleLogoPath,
+            year: d.year,
+            rating: d.rating,
+            genreIds: d.genreIds,
+          };
+        } catch {
+          return null;
+        }
+      }),
+    )
+  ).filter((x): x is FeaturedItem => x !== null).slice(0, 5);
+
+  const featuredIds = new Set(featured.map((f) => `${f.type}:${f.id}`));
 
   return (
     <div className="animate-fade-in">
-      <PageBackdrop src={backdropUrl(hero?.backdropPath, "w1280")} />
-      {hero && <Hero item={hero} />}
+      {featured.length > 0 && <HeroShowcase items={featured} />}
 
       <div className="relative z-10 -mt-6 space-y-2">
         <ContinueWatchingRail />
@@ -44,7 +80,9 @@ export default async function HomePage() {
             title={section.title}
             accent={section.accent}
             href={section.href}
-            items={items.filter((it) => it.id !== hero?.id)}
+            items={items.filter(
+              (it) => !featuredIds.has(`${it.type}:${it.id}`),
+            )}
             priority={i === 0}
           />
         ))}
