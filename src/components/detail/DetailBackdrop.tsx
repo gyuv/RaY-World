@@ -151,13 +151,16 @@ export function DetailBackdrop({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keys.join(",")]);
 
-  // Fade the sharp imagery to transparent at the bottom so it dissolves into
-  // the page's blurred wash — no hard seam between the hero and the sections.
+  // Long, smooth ramp with no hard stops: the image/trailer dissolves over the
+  // bottom ~15% into the page's blurred wash, so there is no line where the
+  // banner or trailer window meets the page.
   const fadeMask =
-    "linear-gradient(to bottom, #000 0%, #000 28%, rgba(0,0,0,0.35) 66%, transparent 90%)";
+    "linear-gradient(to bottom, #000 0%, #000 48%, rgba(0,0,0,0.55) 74%, rgba(0,0,0,0.18) 88%, transparent 100%)";
 
   return (
     <div className="absolute inset-0 overflow-hidden">
+      {/* Everything (image, trailer AND the left scrim) shares the same bottom
+          fade, so nothing has a hard bottom edge. */}
       <div
         className="absolute inset-0"
         style={{ maskImage: fadeMask, WebkitMaskImage: fadeMask }}
@@ -193,10 +196,10 @@ export function DetailBackdrop({
         >
           <div ref={hostRef} className="h-full w-full" aria-hidden />
         </div>
-      </div>
 
-      {/* Left scrim only (vertical gradient) — text legibility, no horizontal band. */}
-      <div className="absolute inset-0 bg-side-fade" />
+        {/* Left scrim for text legibility — inside the mask so it fades too. */}
+        <div className="absolute inset-0 bg-side-fade" />
+      </div>
     </div>
   );
 }

@@ -45,7 +45,7 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
 
   return (
     <section
-      className="relative -mt-20 sm:-mt-24"
+      className="relative -mt-24 sm:-mt-28 lg:-mt-32"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -92,13 +92,13 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
         <div
           className="absolute inset-0"
           style={{
-            // Long, early-completing fade: the sharp image dissolves gradually
-            // into the blurred wash and is fully gone by 90%, so there is no
-            // crisp line where the banner meets the page.
+            // Long, smooth ramp with no hard stops: the banner dissolves over
+            // the bottom ~15% into the blurred wash, so there is no line where
+            // it meets the page.
             maskImage:
-              "linear-gradient(to bottom, #000 0%, #000 28%, rgba(0,0,0,0.35) 66%, transparent 90%)",
+              "linear-gradient(to bottom, #000 0%, #000 48%, rgba(0,0,0,0.55) 74%, rgba(0,0,0,0.18) 88%, transparent 100%)",
             WebkitMaskImage:
-              "linear-gradient(to bottom, #000 0%, #000 28%, rgba(0,0,0,0.35) 66%, transparent 90%)",
+              "linear-gradient(to bottom, #000 0%, #000 48%, rgba(0,0,0,0.55) 74%, rgba(0,0,0,0.18) 88%, transparent 100%)",
           }}
         >
           {items.map((it, i) => {
@@ -126,8 +126,9 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
               </div>
             );
           })}
+          {/* Left scrim — inside the mask so it fades at the bottom too. */}
+          <div className="absolute inset-0 bg-side-fade" />
         </div>
-        <div className="absolute inset-0 bg-side-fade" />
 
         {/* Active content */}
         <div className="container-page absolute inset-x-0 bottom-0">
