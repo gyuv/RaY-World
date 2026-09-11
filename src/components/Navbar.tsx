@@ -67,18 +67,23 @@ export function Navbar() {
         <Link
           href="/"
           aria-label="RAYWORLD home"
-          className="rounded-xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ray-400"
+          className="relative -mt-2 rounded-xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ray-400 sm:-mt-3 lg:-mt-4"
         >
+          {/* Rhythmic white pulse behind the logo */}
+          <span
+            aria-hidden
+            className="logo-pulse pointer-events-none absolute inset-0 rounded-full bg-white/40 blur-2xl"
+          />
           <BrandImage
             src="/brand/footer.png"
             alt="RAYWORLD"
-            className="h-[76px] w-auto sm:h-[100px] lg:h-[120px]"
+            className="relative h-[76px] w-auto sm:h-[100px] lg:h-[120px]"
             fallback={<Logo asStatic size={52} />}
           />
         </Link>
 
         {/* Right-aligned glass nav pill (desktop) */}
-        <nav className="ml-auto hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.07] p-1.5 backdrop-blur-xl lg:flex">
+        <nav className="ml-auto -mt-1 hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.07] p-1.5 backdrop-blur-xl sm:-mt-2 lg:flex">
           {PRIMARY.map(({ href, label, Icon }) => (
             <Link
               key={href}
@@ -122,7 +127,7 @@ export function Navbar() {
         </nav>
 
         {/* Mobile actions */}
-        <div className="ml-auto flex items-center gap-1 lg:hidden">
+        <div className="ml-auto -mt-1 flex items-center gap-1 lg:hidden">
           <button
             type="button"
             aria-label="Search"

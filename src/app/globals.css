@@ -46,6 +46,23 @@ body {
   contain-intrinsic-size: 1px 360px;
 }
 
+/* Rhythmic white pulse behind the site logo. */
+@keyframes logoPulse {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.14);
+  }
+}
+.logo-pulse {
+  transform-origin: center;
+  animation: logoPulse 2.2s ease-in-out infinite;
+}
+
 /* Smart-TV / large display: scale the whole UI up so it reads from a couch. */
 @media (min-width: 1920px) {
   html {
