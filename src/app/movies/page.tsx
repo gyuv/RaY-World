@@ -17,6 +17,8 @@ export default function MoviesPage({ searchParams }: { searchParams: SP }) {
       basePath="/movies"
       base={{ type: "movie" }}
       searchParams={searchParams}
+      showFilters
+      defaultSort="latest"
     />
   );
 }

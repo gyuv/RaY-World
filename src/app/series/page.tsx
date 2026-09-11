@@ -17,6 +17,8 @@ export default function SeriesPage({ searchParams }: { searchParams: SP }) {
       basePath="/series"
       base={{ type: "tv" }}
       searchParams={searchParams}
+      showFilters
+      defaultSort="latest"
     />
   );
 }
