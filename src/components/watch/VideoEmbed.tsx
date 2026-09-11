@@ -102,7 +102,7 @@ export function VideoEmbed({
                 title={`${title} — ${active.label}`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                 referrerPolicy="origin"
-                sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
+                
                 allowFullScreen
                 className="h-full w-full border-0"
               />
