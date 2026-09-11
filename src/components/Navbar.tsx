@@ -40,16 +40,8 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -63,9 +55,12 @@ export function Navbar() {
     <header
       className={cn(
         "sticky top-0 z-40 transition-colors duration-300",
-        scrolled || menuOpen || searchOpen
-          ? "border-b border-white/10 bg-ink-950/70 backdrop-blur-xl"
-          : "bg-gradient-to-b from-ink-950/70 via-ink-950/20 to-transparent",
+        // Transparent at all times (including on scroll). Only the open
+        // mobile menu / search panel gets a backdrop so its content stays
+        // legible; the floating nav pill and logo carry their own contrast.
+        menuOpen || searchOpen
+          ? "border-b border-white/10 bg-ink-950/80 backdrop-blur-xl"
+          : "bg-transparent",
       )}
     >
       <div className="container-page flex h-24 items-center gap-4 sm:h-28 lg:h-32">
