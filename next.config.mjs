@@ -7,8 +7,7 @@
  *
  * Notes / where to extend:
  *   - `frame-src` must list every host you embed in an <iframe>. YouTube (for
- *     trailers) is allowed. When you add a licensed streaming embed in
- *     getStreamSources(kind:"embed"), ADD its host here or the iframe is blocked.
+ *     trailers) and streaming embed providers are allowed.
  *   - `media-src` / `connect-src` allow direct video files + HLS from your own
  *     origin; add your CDN/Mux/Cloudflare Stream hosts there when you use them.
  *   - Next.js needs 'unsafe-inline' for its hydration/bootstrap scripts and for
@@ -21,7 +20,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' https://image.tmdb.org https://i.ytimg.com data: blob:",
   "media-src 'self' blob: https:",
-  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://peachify.top https://2embed.cc https://vidsrc.sbs",
+  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://peachify.top https://2embed.cc https://vidsrc.sbs https://vidsrc.xyz https://embed.su https://vidsrc.to https://player.vidsrc.nl https://*.vidsrc.xyz https://*.embed.su https://*.vidsrc.to https://*.vidsrc.nl",
   // The native HLS player (hls.js) fetches .m3u8 manifests + .ts/.m4s segments
   // over HTTPS from whatever authorized CDN a source points at, so connect-src
   // allows https:. Google Cast also talks to gstatic. blob: covers hls.js worker.
