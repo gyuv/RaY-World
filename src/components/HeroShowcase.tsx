@@ -43,40 +43,36 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
   if (count === 0) return null;
   const go = (n: number) => setActive(((n % count) + count) % count);
 
+  const activeItem = items[active];
+  const washSrc = backdropUrl(activeItem.backdropPath, "w300");
+  const activeBackdrop = backdropUrl(activeItem.backdropPath, "w1280");
+  const activePoster = posterUrl(activeItem.posterPath, "w780") ?? activeBackdrop;
+
+  // Preload the next slide so the crossfade is instant, without mounting it.
+  const nextItem = count > 1 ? items[(active + 1) % count] : null;
+  const nextPoster = nextItem ? posterUrl(nextItem.posterPath, "w780") : null;
+  const nextBackdrop = nextItem ? backdropUrl(nextItem.backdropPath, "w1280") : null;
+
   return (
     <section
       className="relative -mt-24 sm:-mt-28 lg:-mt-32"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Full-page blurred wash following the active banner */}
+      {/* Full-page blurred wash — only the active slide is rendered, from a
+          tiny w300 source (it's blurred anyway), so there is next to nothing to
+          decode or blur. */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        {items.map((it, i) => {
-          const wash = backdropUrl(it.backdropPath, "w780");
-          return (
-            <div
-              key={it.id}
-              className={cn(
-                "absolute inset-0 transition-opacity duration-1000",
-                i === active ? "opacity-100" : "opacity-0",
-              )}
-            >
-              {wash && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={wash}
-                  alt=""
-                  loading={i === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  // Same crop/anchor as the sharp banner (object-top) and near-
-                  // full opacity, so the banner dissolves into an identical but
-                  // blurred picture in the same place — no shift, no dim step.
-                  className="h-full w-full scale-110 object-cover object-top blur-[44px]"
-                />
-              )}
-            </div>
-          );
-        })}
+        {washSrc && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={activeItem.id}
+            src={washSrc}
+            alt=""
+            decoding="async"
+            className="h-full w-full scale-110 animate-fade-in object-cover object-top blur-[34px]"
+          />
+        )}
         <div
           className="absolute inset-0"
           style={{
@@ -101,46 +97,26 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
               "linear-gradient(to bottom, #000 0%, #000 48%, rgba(0,0,0,0.55) 74%, rgba(0,0,0,0.18) 88%, transparent 100%)",
           }}
         >
-          {items.map((it, i) => {
-            const bd = backdropUrl(it.backdropPath, "w1280");
-            // On phones the wide 16:9 backdrop would crop to a zoomed sliver, so
-            // use the portrait poster there and switch to the backdrop at sm+.
-            const poster = posterUrl(it.posterPath, "w780") ?? bd;
-            return (
-              <div
-                key={it.id}
-                className={cn(
-                  "absolute inset-0 transition-opacity duration-700",
-                  i === active ? "opacity-100" : "opacity-0",
+          {/* Only the active slide's image is mounted. <picture> loads the
+              portrait poster on phones OR the wide backdrop at sm+ — never both. */}
+          {activeBackdrop || activePoster ? (
+            <div key={activeItem.id} className="absolute inset-0 animate-fade-in">
+              <picture>
+                {activeBackdrop && (
+                  <source media="(min-width: 640px)" srcSet={activeBackdrop} />
                 )}
-              >
-                {bd || poster ? (
-                  <>
-                    {/* Mobile: portrait poster */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={poster ?? bd ?? ""}
-                      alt=""
-                      loading={i === 0 ? "eager" : "lazy"}
-                      decoding="async"
-                      className="h-full w-full object-cover object-top sm:hidden"
-                    />
-                    {/* sm+ : wide backdrop */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={bd ?? poster ?? ""}
-                      alt=""
-                      loading={i === 0 ? "eager" : "lazy"}
-                      decoding="async"
-                      className="hidden h-full w-full object-cover object-top sm:block"
-                    />
-                  </>
-                ) : (
-                  <div className="h-full w-full bg-gradient-to-br from-ink-800 to-ink-950" />
-                )}
-              </div>
-            );
-          })}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={activePoster ?? activeBackdrop ?? ""}
+                  alt=""
+                  decoding="async"
+                  className="h-full w-full object-cover object-top"
+                />
+              </picture>
+            </div>
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-ink-800 to-ink-950" />
+          )}
           {/* Left scrim — inside the mask so it fades at the bottom too. */}
           <div className="absolute inset-0 bg-side-fade" />
         </div>
@@ -189,6 +165,16 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
           </div>
         )}
       </div>
+
+      {/* Invisible preloader for the next slide — keeps switches instant. */}
+      {nextItem && (
+        <div aria-hidden className="pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {nextPoster && <img src={nextPoster} alt="" loading="lazy" decoding="async" />}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {nextBackdrop && <img src={nextBackdrop} alt="" loading="lazy" decoding="async" />}
+        </div>
+      )}
     </section>
   );
 }
