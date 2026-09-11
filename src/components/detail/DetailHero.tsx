@@ -3,7 +3,6 @@ import { MovieDetail, SeriesDetail } from "@/lib/providers/types";
 import { backdropUrl, titleLogoUrl } from "@/lib/images";
 import { getLanguageName } from "@/lib/config/languages";
 import { formatRating, formatRuntime } from "@/lib/utils";
-import { Poster } from "@/components/Poster";
 import { PlayIcon, StarIcon } from "@/components/icons";
 import { WatchlistButton } from "@/components/WatchlistButton";
 import { TrailerButton } from "./TrailerButton";
@@ -66,13 +65,9 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
         )}
       </div>
 
-      {/* Content */}
+      {/* Content — poster removed; the title-logo carries the identity now */}
       <div className="container-page relative -mt-40 pb-8 sm:-mt-48">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end">
-          <div className="relative aspect-[2/3] w-32 flex-none overflow-hidden rounded-2xl shadow-card ring-1 ring-white/10 sm:w-52">
-            <Poster path={item.posterPath} alt={item.title} size="w500" priority />
-          </div>
-
           <div className="min-w-0 flex-1">
             {item.genres.length > 0 && (
               <div className="mb-2 flex flex-wrap gap-1.5">
