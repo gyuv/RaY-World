@@ -7,6 +7,7 @@ import { PageBackdrop } from "@/components/PageBackdrop";
 import { backdropUrl } from "@/lib/images";
 import { CastRow } from "@/components/detail/CastRow";
 import { TrailersRow } from "@/components/detail/TrailersRow";
+import { WatchProviders } from "@/components/detail/WatchProviders";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 
@@ -73,6 +74,8 @@ export default async function MoviePage({
           detail.status && { label: "Status", value: detail.status },
         ]}
       />
+
+      <WatchProviders data={detail.watchProviders} />
 
       <CastRow cast={detail.cast} />
 

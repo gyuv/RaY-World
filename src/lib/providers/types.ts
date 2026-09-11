@@ -124,6 +124,8 @@ export interface MovieDetail extends MediaItem {
   revenue?: number;
   collection?: { id: number; name: string } | null;
   productionCompanies?: { name: string; logoPath?: string | null }[];
+  /** Legal streaming/rent/buy availability (region-aware). */
+  watchProviders?: TitleWatchAvailability | null;
 }
 
 /** Full detail record for a TV series. */
@@ -145,6 +147,8 @@ export interface SeriesDetail extends MediaItem {
   status?: string;
   creators: CrewMember[];
   networks?: { name: string; logoPath?: string | null }[];
+  /** Legal streaming/rent/buy availability (region-aware). */
+  watchProviders?: TitleWatchAvailability | null;
 }
 
 export interface Paginated<T> {
@@ -225,6 +229,24 @@ export interface WatchProviderInfo {
   id: number;
   name: string;
   logoPath: string;
+}
+
+/** One platform a title can be watched on, in a given region. */
+export interface WatchOffer {
+  id: number;
+  name: string;
+  logoPath?: string | null;
+}
+
+/** Where a title is legally available in a region (from TMDB watch/providers). */
+export interface TitleWatchAvailability {
+  region: string;
+  /** JustWatch attribution deep-link for this title+region (required by TMDB). */
+  link?: string;
+  /** Subscription/streaming platforms. */
+  flatrate: WatchOffer[];
+  rent: WatchOffer[];
+  buy: WatchOffer[];
 }
 
 /** Thrown when the upstream provider is not configured or unreachable. */

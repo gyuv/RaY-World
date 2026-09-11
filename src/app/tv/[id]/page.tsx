@@ -7,6 +7,7 @@ import { DetailHero } from "@/components/detail/DetailHero";
 import { PageBackdrop } from "@/components/PageBackdrop";
 import { CastRow } from "@/components/detail/CastRow";
 import { TrailersRow } from "@/components/detail/TrailersRow";
+import { WatchProviders } from "@/components/detail/WatchProviders";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 import { FactsBlock } from "@/app/movie/[id]/page";
@@ -101,6 +102,8 @@ export default async function TvPage({ params }: { params: { id: string } }) {
           </div>
         </section>
       )}
+
+      <WatchProviders data={detail.watchProviders} />
 
       <CastRow cast={detail.cast} />
 

@@ -18,6 +18,8 @@ import {
   TrendingOptions,
   Video,
   WatchProviderInfo,
+  WatchOffer,
+  TitleWatchAvailability,
 } from "./types";
 import { getGenreId } from "../config/genres";
 
@@ -270,7 +272,7 @@ class TmdbProvider implements MediaProvider {
     try {
       const raw = await tmdbFetch<any>(`/movie/${id}`, {
         params: {
-          append_to_response: "credits,videos,recommendations,similar,images",
+          append_to_response: "credits,videos,recommendations,similar,images,watch/providers",
           include_image_language: "en,ta,hi,te,ml,kn,null",
           // Without this TMDB returns only English trailers, so Tamil/Indian
           // titles look like they have "no trailer". Include the languages we
@@ -294,6 +296,7 @@ class TmdbProvider implements MediaProvider {
           ? { id: raw.belongs_to_collection.id, name: raw.belongs_to_collection.name }
           : null,
         productionCompanies: mapCompanies(raw.production_companies),
+        watchProviders: mapTitleWatch(raw["watch/providers"]?.results),
         genres: raw.genres ?? [],
         cast: mapCast(raw.credits?.cast),
         crew: mapCrew(raw.credits?.crew),
@@ -316,7 +319,7 @@ class TmdbProvider implements MediaProvider {
       const raw = await tmdbFetch<any>(`/tv/${id}`, {
         params: {
           append_to_response:
-            "credits,videos,recommendations,similar,aggregate_credits,images",
+            "credits,videos,recommendations,similar,aggregate_credits,images,watch/providers",
           include_image_language: "en,ta,hi,te,ml,kn,null",
           include_video_language: "en,ta,hi,te,ml,kn,bn,mr,gu,pa,ur,ja,ko,null",
         },
@@ -347,6 +350,7 @@ class TmdbProvider implements MediaProvider {
           normalizeMedia(m, "tv"),
         ),
         networks: mapCompanies(raw.networks),
+        watchProviders: mapTitleWatch(raw["watch/providers"]?.results),
         seasons: mapSeasons(raw.seasons),
         numberOfSeasons: raw.number_of_seasons,
         numberOfEpisodes: raw.number_of_episodes,
@@ -563,6 +567,40 @@ function mapCompanies(
     .filter((c) => c?.name)
     .slice(0, 4)
     .map((c) => ({ name: c.name, logoPath: c.logo_path ?? null }));
+}
+
+/**
+ * Map TMDB's per-title watch/providers block into region-aware availability.
+ * Tamil-first, so we prefer India (IN), then fall back to US, then whatever
+ * region TMDB has. Only the flatrate/rent/buy lists + the JustWatch link are
+ * used — TMDB requires that attribution link to be shown, so we surface it.
+ */
+function mapTitleWatch(
+  results?: Record<string, any>,
+): TitleWatchAvailability | null {
+  if (!results) return null;
+  const PREFERRED = ["IN", "US", "GB", "CA", "AU"];
+  const region =
+    PREFERRED.find((r) => results[r]) ?? Object.keys(results)[0];
+  const block = region ? results[region] : undefined;
+  if (!block) return null;
+
+  const offers = (list?: any[]): WatchOffer[] =>
+    (list ?? [])
+      .slice()
+      .sort((a, b) => (a.display_priority ?? 99) - (b.display_priority ?? 99))
+      .map((p) => ({
+        id: p.provider_id,
+        name: p.provider_name,
+        logoPath: p.logo_path ?? null,
+      }));
+
+  const flatrate = offers(block.flatrate ?? block.ads);
+  const rent = offers(block.rent);
+  const buy = offers(block.buy);
+  if (!flatrate.length && !rent.length && !buy.length) return null;
+
+  return { region, link: block.link, flatrate, rent, buy };
 }
 
 function mapSeasons(seasons?: any[]): Season[] {
