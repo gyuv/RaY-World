@@ -34,7 +34,16 @@ body {
       rgba(168, 85, 247, 0.12),
       transparent 55%
     );
-  background-attachment: fixed;
+  /* No background-attachment: fixed — it forces a full-viewport repaint on every
+     scroll frame (major jank, worst on mobile). The fixed page washes provide
+     the ambient film-colour layer instead. */
+}
+
+/* Offscreen content is skipped until it scrolls near the viewport, so long
+   pages of poster rails stay buttery while scrolling. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 360px;
 }
 
 /* Smart-TV / large display: scale the whole UI up so it reads from a couch. */

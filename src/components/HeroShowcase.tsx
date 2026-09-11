@@ -68,18 +68,20 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
                   alt=""
                   loading={i === 0 ? "eager" : "lazy"}
                   decoding="async"
-                  className="h-full w-full scale-125 object-cover opacity-60 blur-[60px]"
+                  // Same crop/anchor as the sharp banner (object-top) and near-
+                  // full opacity, so the banner dissolves into an identical but
+                  // blurred picture in the same place — no shift, no dim step.
+                  className="h-full w-full scale-110 object-cover object-top blur-[44px]"
                 />
               )}
             </div>
           );
         })}
-        <div className="absolute inset-0 bg-white/[0.04]" />
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(10,15,30,0.20), rgba(10,15,30,0.45) 55%, rgba(10,15,30,0.82))",
+              "linear-gradient(to bottom, rgba(10,15,30,0.12) 0%, rgba(10,15,30,0.5) 62%, rgba(10,15,30,0.9) 100%)",
           }}
         />
       </div>

@@ -22,7 +22,9 @@ type YTPlayer = {
   mute: () => void;
   playVideo: () => void;
   seekTo: (s: number, allowSeekAhead: boolean) => void;
-  loadVideoById: (id: string) => void;
+  loadVideoById: (arg: string | { videoId: string; suggestedQuality?: string }) => void;
+  setPlaybackQuality?: (q: string) => void;
+  setPlaybackQualityRange?: (min: string, max: string) => void;
   destroy: () => void;
 };
 type YTNamespace = {
@@ -101,10 +103,14 @@ export function DetailBackdrop({
               iv_load_policy: 3,
               disablekb: 1,
               fs: 0,
+              vq: "hd1080",
             },
             events: {
               onReady: (e: { target: YTPlayer }) => {
                 e.target.mute();
+                // Ask YouTube for the best quality it will serve at this size.
+                e.target.setPlaybackQualityRange?.("hd1080", "highres");
+                e.target.setPlaybackQuality?.("hd1080");
                 e.target.playVideo();
               },
               onStateChange: (e: { data: number; target: YTPlayer }) => {
@@ -120,7 +126,10 @@ export function DetailBackdrop({
                 idx += 1;
                 if (idx < keys.length && playerRef.current) {
                   setPlaying(false);
-                  playerRef.current.loadVideoById(keys[idx]);
+                  playerRef.current.loadVideoById({
+                    videoId: keys[idx],
+                    suggestedQuality: "hd1080",
+                  });
                 }
               },
             },

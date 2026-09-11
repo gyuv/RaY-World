@@ -5,6 +5,7 @@ import Link from "next/link";
 import { MediaItem } from "@/lib/providers/types";
 import { MediaCard } from "./MediaCard";
 import { ChevronLeft, ChevronRight } from "./icons";
+import { cn } from "@/lib/utils";
 
 interface MediaRailProps {
   title: string;
@@ -32,7 +33,7 @@ export function MediaRail({
   if (!items.length) return null;
 
   return (
-    <section className="container-page group/rail py-4">
+    <section className={cn("container-page group/rail py-4", !priority && "cv-auto")}>
       <div className="mb-3 flex items-end justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <span

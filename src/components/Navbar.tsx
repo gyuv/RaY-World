@@ -68,7 +68,7 @@ export function Navbar() {
           : "bg-gradient-to-b from-ink-950/70 via-ink-950/20 to-transparent",
       )}
     >
-      <div className="container-page flex h-20 items-center gap-4 sm:h-24">
+      <div className="container-page flex h-24 items-center gap-4 sm:h-28 lg:h-32">
         <Link
           href="/"
           aria-label="RAYWORLD home"
@@ -77,7 +77,7 @@ export function Navbar() {
           <BrandImage
             src="/brand/footer.png"
             alt="RAYWORLD"
-            className="h-16 w-auto sm:h-[76px] lg:h-[88px]"
+            className="h-[76px] w-auto sm:h-[100px] lg:h-[120px]"
             fallback={<Logo asStatic size={52} />}
           />
         </Link>

@@ -46,6 +46,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Warm up the image/host connections before the first request so
+            posters and backdrops start downloading sooner. */}
+        <link rel="preconnect" href="https://image.tmdb.org" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://image.tmdb.org" />
+        <link rel="preconnect" href="https://i.ytimg.com" crossOrigin="" />
+        <link rel="preconnect" href="https://www.youtube-nocookie.com" />
+      </head>
       <body className="min-h-screen font-sans">
         <script
           dangerouslySetInnerHTML={{
