@@ -98,14 +98,16 @@ export function VideoEmbed({
         {playing && canPlay ? (
           <>
             {active ? (
-              <iframe
-                key={active.id}
-                src={active.url}
-                title={`${title} — ${active.label}`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                allowFullScreen
-                className="h-full w-full border-0"
-              />
+              <<iframe
+  key={active.id}
+  src={active.url}
+  title={`${title} — ${active.label}`}
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+  referrerPolicy="origin"
+  sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
+  allowFullScreen
+  className="h-full w-full border-0"
+/>
             ) : trailerKey ? (
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
