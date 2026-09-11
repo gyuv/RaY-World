@@ -50,6 +50,20 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
       {/* Backdrop — image, then the trailer plays sharp behind the hero */}
       <div className="relative h-[52vh] min-h-[360px] w-full overflow-hidden sm:h-[64vh]">
         <DetailBackdrop backdrop={backdrop} trailerKeys={trailerKeys} />
+
+        {/* Movie title-logo, top-left — sits just below the site logo in the nav */}
+        {titleLogo && (
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-10">
+            <div className="container-page pt-28 sm:pt-32 lg:pt-36">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={titleLogo}
+                alt={item.title}
+                className="max-h-24 w-auto max-w-[70%] object-contain object-left drop-shadow-[0_4px_24px_rgba(0,0,0,0.65)] sm:max-h-32 lg:max-h-40 tv:max-h-48"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -74,16 +88,11 @@ export function DetailHero({ item }: { item: MovieDetail | SeriesDetail }) {
               </div>
             )}
 
+            {/* The title-logo artwork is shown top-left over the banner. Here we
+                keep only the accessible heading, or a text title when there is
+                no logo artwork. */}
             {titleLogo ? (
-              <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={titleLogo}
-                  alt={item.title}
-                  className="max-h-24 w-auto max-w-[85%] object-contain object-left drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)] sm:max-h-32 tv:max-h-40"
-                />
-                <h1 className="sr-only">{item.title}</h1>
-              </>
+              <h1 className="sr-only">{item.title}</h1>
             ) : (
               <h1 className="font-display text-4xl font-black leading-[0.95] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:text-6xl tv:text-7xl">
                 {item.title}
