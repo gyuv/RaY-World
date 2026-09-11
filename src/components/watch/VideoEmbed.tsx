@@ -43,7 +43,7 @@ export function VideoEmbed({
       : [
           {
             id: "server1",
-            label: "Server 1 (Nxsha)",
+            label: "Pikachu",
             url:
               mediaType === "tv"
                 ? `https://nxsha.space/embed/tv/${mediaId}/${season}/${episode}?color=netflix`
@@ -52,16 +52,16 @@ export function VideoEmbed({
           },
           {
             id: "server2",
-            label: "Server 2 (Embed.su)",
+            label: "Charizard",
             url:
               mediaType === "tv"
-                ? `https://embed.su/embed/tv/${mediaId}/${season}/${episode}`
-                : `https://embed.su/embed/movie/${mediaId}`,
+                ? `https://peachify.top/embed/tv/${mediaId}/${season}/${episode}`
+                : `https://peachify.top/embed/movie/${mediaId}`,
             kind: "embed",
           },
           {
             id: "server3",
-            label: "Server 3 (VidSrc TO)",
+            label: "Bulbasaur",
             url:
               mediaType === "tv"
                 ? `https://vidsrc.to/embed/tv/${mediaId}/${season}/${episode}`
@@ -70,11 +70,11 @@ export function VideoEmbed({
           },
           {
             id: "server4",
-            label: "Server 4 (VidSrc NL)",
+            label: "Eevee",
             url:
               mediaType === "tv"
-                ? `https://player.vidsrc.nl/embed/tv/${mediaId}/${season}/${episode}`
-                : `https://player.vidsrc.nl/embed/movie/${mediaId}`,
+                ? `https://vidfast.vc/tv/${mediaId}/${season}/${episode}?autoPlay=true`
+                : `https://vidfast.vc/movie/${mediaId}?autoPlay=true`,
             kind: "embed",
           },
         ];
