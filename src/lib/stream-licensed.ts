@@ -13,25 +13,41 @@ export interface LicensedSource {
 }
 
 /**
- * Server definitions mirroring the embed provider configuration from Code 1.
+ * Server definitions mirroring the embed provider configuration from the player component.
  */
 const EMBED_SERVERS = [
-  { id: "server1", label: "Server 1 (VidSrc XYZ)", domain: "https://vidsrc.xyz/embed", region: "US" },
-  { id: "server2", label: "Server 2 (Embed.su)", domain: "https://embed.su/embed", region: "US" },
+  { id: "server1", label: "Server 1 (Nxsha)", domain: "https://nxsha.space/embed", region: "US" },
+  { id: "server2", label: "Server 2 (Peachify)", domain: "https://peachify.top/embed", region: "US" },
   { id: "server3", label: "Server 3 (VidSrc TO)", domain: "https://vidsrc.to/embed", region: "US" },
-  { id: "server4", label: "Server 4 (VidSrc NL)", domain: "https://player.vidsrc.nl/embed", region: "NL" },
+  { id: "server4", label: "Server 4 (VidFast)", domain: "https://vidfast.vc", region: "US" },
 ];
 
 /**
- * Helper to generate iframe embed URLs according to media type and IDs.
+ * Helper to generate iframe embed URLs according to media type and provider rules.
  */
 function buildEmbedUrl(
+  serverId: string,
   domain: string,
   type: "movie" | "tv",
   id: number | string,
   season: number = 1,
   episode: number = 1
 ): string {
+  // Server 1 (Nxsha) uses ?color=netflix query param
+  if (serverId === "server1") {
+    return type === "tv"
+      ? `${domain}/tv/${id}/${season}/${episode}?color=netflix`
+      : `${domain}/movie/${id}?color=netflix`;
+  }
+
+  // Server 4 (VidFast) omits the /embed path segment and uses ?autoPlay=true
+  if (serverId === "server4") {
+    return type === "tv"
+      ? `${domain}/tv/${id}/${season}/${episode}?autoPlay=true`
+      : `${domain}/movie/${id}?autoPlay=true`;
+  }
+
+  // Server 2 (Peachify) and Server 3 (VidSrc TO) share standard embed structure
   if (type === "tv") {
     return `${domain}/tv/${id}/${season}/${episode}`;
   }
@@ -40,7 +56,7 @@ function buildEmbedUrl(
 
 /**
  * Resolve the ordered list of streaming servers for a title/episode using 
- * the embed provider mechanism from Code 1.
+ * the embed provider mechanism from the player component.
  */
 export async function getLicensedSources(
   type: "movie" | "tv",
@@ -65,7 +81,7 @@ export async function getLicensedSources(
     id: server.id,
     label: server.label,
     region: server.region,
-    url: buildEmbedUrl(server.domain, type, targetId, season, episode),
+    url: buildEmbedUrl(server.id, server.domain, type, targetId, season, episode),
     kind: "embed",
   }));
 }
