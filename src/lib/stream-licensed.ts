@@ -16,7 +16,7 @@ export interface LicensedSource {
  * Server definitions mirroring the embed provider configuration from the player component.
  */
 const EMBED_SERVERS = [
-  { id: "server1", label: "Pikachu", domain: "https://nxsha.space/embed", region: "US" },
+  { id: "server1", label: "Pikachu", domain: "https://vidsrc.cc/v2/embed", region: "US" },
   { id: "server2", label: "Charizard", domain: "https://peachify.top/embed", region: "US" },
   { id: "server3", label: "Bulbasaur", domain: "https://vidsrc.to/embed", region: "US" },
   { id: "server4", label: "Snorlax", domain: "https://vidfast.vc", region: "US" },
@@ -33,13 +33,6 @@ function buildEmbedUrl(
   season: number = 1,
   episode: number = 1
 ): string {
-  // Server 1 (Nxsha) uses ?color=netflix query param
-  if (serverId === "server1") {
-    return type === "tv"
-      ? `${domain}/tv/${id}/${season}/${episode}?color=netflix`
-      : `${domain}/movie/${id}?color=netflix`;
-  }
-
   // Server 4 (VidFast) omits the /embed path segment and uses ?autoPlay=true
   if (serverId === "server4") {
     return type === "tv"
@@ -47,7 +40,7 @@ function buildEmbedUrl(
       : `${domain}/movie/${id}?autoPlay=true`;
   }
 
-  // Server 2 (Peachify) and Server 3 (VidSrc TO) share standard embed structure
+  // Server 1 (VidSrc CC via Pikachu), Server 2 (Peachify), and Server 3 (VidSrc TO)
   if (type === "tv") {
     return `${domain}/tv/${id}/${season}/${episode}`;
   }
