@@ -16,9 +16,7 @@ export interface VideoEmbedProps {
   storageKey?: string;
   detailHref?: string;
   servers?: StreamSource[];
-  /** Alias for servers to maintain compatibility with WatchPage */
   sources?: StreamSource[];
-  /** YouTube trailer key, used as a preview when no server is configured. */
   trailerKey?: string | null;
   mediaType?: "movie" | "tv";
   mediaId?: string | number;
@@ -37,7 +35,6 @@ export function VideoEmbed({
   season = 1,
   episode = 1,
 }: VideoEmbedProps) {
-  // Combine passed sources/servers, or build default embed streaming servers
   const effectiveServers: StreamSource[] =
     sources.length > 0
       ? sources
@@ -86,7 +83,6 @@ export function VideoEmbed({
   const [activeId, setActiveId] = useState<string | undefined>(configured[0]?.id);
   const [playing, setPlaying] = useState(false);
 
-  // Keep active server valid when media or episode changes
   useEffect(() => {
     if (configured.length && !configured.some((s) => s.id === activeId)) {
       setActiveId(configured[0].id);
@@ -96,41 +92,21 @@ export function VideoEmbed({
   const active = configured.find((s) => s.id === activeId) ?? configured[0];
   const canPlay = Boolean(active || trailerKey);
 
-  function nextServer() {
-    if (configured.length < 2 || !active) return;
-    const i = configured.findIndex((s) => s.id === active.id);
-    setActiveId(configured[(i + 1) % configured.length].id);
-  }
-
   return (
     <div>
-      {/* ---------- Player Window ---------- */}
       <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black ring-1 ring-white/10">
         {playing && canPlay ? (
           <>
             {active ? (
-              active.kind === "embed" ? (
-                <iframe
-                  key={active.id}
-                  src={active.url}
-                  title={`${title} — ${active.label}`}
-                  sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="h-full w-full"
-                />
-              ) : (
-                <video
-                  key={active.id}
-                  src={active.url}
-                  controls
-                  autoPlay
-                  playsInline
-                  onError={nextServer}
-                  poster={poster ?? undefined}
-                  className="h-full w-full bg-black"
-                />
-              )
+              <iframe
+                key={active.id}
+                src={active.url}
+                title={`${title} — ${active.label}`}
+                sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="h-full w-full"
+              />
             ) : trailerKey ? (
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
@@ -163,59 +139,33 @@ export function VideoEmbed({
               <div className="absolute inset-0 bg-gradient-to-br from-ink-800 to-ink-950" />
             )}
             <div className="absolute inset-0 bg-ink-950/40" />
-            <span className="relative grid h-16 w-16 place-items-center rounded-full bg-ray-gradient text-ink-950 shadow-glow transition group-hover:scale-105 disabled:opacity-50">
+            <span className="relative grid h-16 w-16 place-items-center rounded-full bg-ray-gradient text-ink-950 shadow-glow transition group-hover:scale-105">
               <PlayIcon className="text-2xl" />
-            </span>
-            {/* Brand watermark */}
-            <span className="pointer-events-none absolute right-3 top-3 opacity-80">
-              <BrandImage
-                src="/brand/watchplayer.png"
-                alt="RAYWORLD"
-                className="h-6 w-auto sm:h-7"
-                fallback={
-                  <span className="flex items-center gap-1.5">
-                    <LogoMark size={22} animate={false} />
-                    <span className="font-display text-xs font-black tracking-tight">
-                      <span className="text-white/90">RAY</span>
-                      <span className="bg-[linear-gradient(120deg,#ec4899,#a855f7)] bg-clip-text text-transparent">
-                        WORLD
-                      </span>
-                    </span>
-                  </span>
-                }
-              />
             </span>
           </button>
         )}
       </div>
 
-      {/* ---------- Golden Server Buttons ---------- */}
       {configured.length > 0 && (
         <div className="mt-4 rounded-2xl border border-white/10 bg-ink-850/60 p-4">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-white/75">Servers</h3>
-            <span className="text-xs text-white/40">Switch if one doesn’t load</span>
+            <span className="text-xs text-white/40">Switch server if playback stalls</span>
           </div>
           <div className="flex flex-wrap gap-2.5">
             {configured.map((s) => {
               const isActive = s.id === active?.id;
-              const disabled = !s.url;
               return (
                 <button
                   key={s.id}
                   onClick={() => {
-                    if (disabled) return;
                     setActiveId(s.id);
                     setPlaying(true);
                   }}
-                  disabled={disabled}
-                  aria-pressed={isActive}
                   className={cn(
                     "rounded-xl px-5 py-2.5 text-sm font-bold transition",
                     isActive
                       ? "bg-ray-gradient text-ink-950 shadow-glow"
-                      : disabled
-                      ? "cursor-not-allowed border border-ray-500/30 bg-transparent text-ray-200/40"
                       : "border border-ray-400/40 bg-ray-500/10 text-ray-200 hover:bg-ray-500/20"
                   )}
                 >
