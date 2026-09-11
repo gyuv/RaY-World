@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { provider } from "@/lib/providers";
 import { ProviderError, SeriesDetail } from "@/lib/providers/types";
-import { PlayerStage } from "@/components/watch/PlayerStage";
+import { VideoEmbed } from "@/components/watch/VideoEmbed";
 import { HistoryTracker } from "@/components/watch/HistoryTracker";
 import { getLicensedSources } from "@/lib/stream-licensed";
 import { MediaRail } from "@/components/MediaRail";
@@ -56,7 +56,7 @@ export default async function WatchPage({
             }}
           />
           <div className="container-page py-6">
-            <PlayerStage
+            <VideoEmbed
               title={detail.title}
               subtitle={detail.year ? String(detail.year) : undefined}
               poster={backdropUrl(detail.backdropPath, "w1280")}
@@ -64,6 +64,8 @@ export default async function WatchPage({
               storageKey={`movie-${detail.id}`}
               detailHref={`/movie/${detail.id}`}
               sources={servers}
+              mediaType="movie"
+              mediaId={detail.id}
             />
             <div className="mt-5 flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -178,7 +180,7 @@ async function TvWatch({
       )}
 
       <div className="container-page py-6">
-        <PlayerStage
+        <VideoEmbed
           title={detail.title}
           subtitle={`S${seasonNumber} · E${current?.episodeNumber ?? "—"}${current?.name ? `: ${current.name}` : ""}`}
           poster={stillUrl(current?.stillPath, "w780") ?? backdropUrl(detail.backdropPath, "w1280")}
@@ -186,6 +188,10 @@ async function TvWatch({
           storageKey={`tv-${detail.id}-${seasonNumber}-${current?.episodeNumber ?? 1}`}
           detailHref={`/tv/${detail.id}`}
           sources={servers}
+          mediaType="tv"
+          mediaId={detail.id}
+          season={seasonNumber}
+          episode={current?.episodeNumber ?? 1}
         />
 
         <div className="mt-5 flex flex-wrap items-start justify-between gap-4">
