@@ -43,11 +43,11 @@ export function VideoEmbed({
       : [
           {
             id: "server1",
-            label: "Server 1 (VidSrc XYZ)",
+            label: "Server 1 (Nxsha)",
             url:
               mediaType === "tv"
-                ? `https://vidsrc.xyz/embed/tv/${mediaId}/${season}/${episode}`
-                : `https://vidsrc.xyz/embed/movie/${mediaId}`,
+                ? `https://nxsha.space/embed/tv/${mediaId}/${season}/${episode}?color=netflix`
+                : `https://nxsha.space/embed/movie/${mediaId}?color=netflix`,
             kind: "embed",
           },
           {
@@ -102,18 +102,17 @@ export function VideoEmbed({
                 key={active.id}
                 src={active.url}
                 title={`${title} — ${active.label}`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                 allowFullScreen
-                className="h-full w-full"
+                className="h-full w-full border-0"
               />
             ) : trailerKey ? (
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
                 title={`${title} — preview`}
-                
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                 allowFullScreen
-                className="h-full w-full"
+                className="h-full w-full border-0"
               />
             ) : null}
 
