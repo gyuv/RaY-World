@@ -102,7 +102,6 @@ export function VideoEmbed({
                 key={active.id}
                 src={active.url}
                 title={`${title} — ${active.label}`}
-                sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="h-full w-full"
@@ -111,7 +110,7 @@ export function VideoEmbed({
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
                 title={`${title} — preview`}
-                sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
+                
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="h-full w-full"
