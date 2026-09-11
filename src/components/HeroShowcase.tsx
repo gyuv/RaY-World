@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { backdropUrl, titleLogoUrl } from "@/lib/images";
+import { backdropUrl, posterUrl, titleLogoUrl } from "@/lib/images";
 import { getLanguageName } from "@/lib/config/languages";
 import { getGenreName } from "@/lib/config/genres";
 import { cn, formatRating } from "@/lib/utils";
@@ -103,6 +103,9 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
         >
           {items.map((it, i) => {
             const bd = backdropUrl(it.backdropPath, "w1280");
+            // On phones the wide 16:9 backdrop would crop to a zoomed sliver, so
+            // use the portrait poster there and switch to the backdrop at sm+.
+            const poster = posterUrl(it.posterPath, "w780") ?? bd;
             return (
               <div
                 key={it.id}
@@ -111,15 +114,27 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
                   i === active ? "opacity-100" : "opacity-0",
                 )}
               >
-                {bd ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={bd}
-                    alt=""
-                    loading={i === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                    className="h-full w-full object-cover object-top"
-                  />
+                {bd || poster ? (
+                  <>
+                    {/* Mobile: portrait poster */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={poster ?? bd ?? ""}
+                      alt=""
+                      loading={i === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      className="h-full w-full object-cover object-top sm:hidden"
+                    />
+                    {/* sm+ : wide backdrop */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={bd ?? poster ?? ""}
+                      alt=""
+                      loading={i === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      className="hidden h-full w-full object-cover object-top sm:block"
+                    />
+                  </>
                 ) : (
                   <div className="h-full w-full bg-gradient-to-br from-ink-800 to-ink-950" />
                 )}
