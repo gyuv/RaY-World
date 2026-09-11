@@ -5,7 +5,7 @@
  *
  * A full, self-hosted player (no third-party iframe) built on the browser's
  * <video> element + hls.js. It plays direct .m3u8 / .mp4 sources resolved by
- * src/lib/stream-hls.ts (getPlayableSources) — sources you are licensed to
+ * src/lib/stream-licensed.ts (getLicensedSources) — sources you are licensed to
  * serve — and exposes the full control set: auto-balancing server failover,
  * Auto+manual quality, audio-track and subtitle selection, subtitle upload and
  * sync, playback speed, sleep timer, Picture-in-Picture, AirPlay/Chromecast,
@@ -16,7 +16,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type Hls from "hls.js";
-import type { PlayableSource } from "@/lib/stream-hls";
+import type { LicensedSource } from "@/lib/stream-licensed";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ icons -- */
@@ -174,7 +174,7 @@ export function HlsPlayer({
   storageKey,
   onExit,
 }: {
-  sources: PlayableSource[];
+  sources: LicensedSource[];
   title: string;
   subtitle?: string;
   poster?: string | null;
@@ -681,7 +681,7 @@ export function HlsPlayer({
             <p className="text-lg font-bold text-white">No available source</p>
             <p className="mt-1 max-w-sm text-sm text-white/60">
               No authorized stream is configured for this title yet. Add a licensed source in{" "}
-              <code className="text-ray-300">getPlayableSources</code> and it will play here.
+              <code className="text-ray-300">getLicensedSources</code> and it will play here.
             </p>
           </div>
         </div>

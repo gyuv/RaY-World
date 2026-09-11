@@ -5,7 +5,7 @@ import { provider } from "@/lib/providers";
 import { ProviderError, SeriesDetail } from "@/lib/providers/types";
 import { PlayerStage } from "@/components/watch/PlayerStage";
 import { HistoryTracker } from "@/components/watch/HistoryTracker";
-import { getPlayableSources } from "@/lib/stream-hls";
+import { getLicensedSources } from "@/lib/stream-licensed";
 import { MediaRail } from "@/components/MediaRail";
 import { ProviderNotice } from "@/components/ProviderNotice";
 import { EmptyState } from "@/components/EmptyState";
@@ -43,7 +43,7 @@ export default async function WatchPage({
     if (type === "movie") {
       const detail = await provider.getMovie(numeric);
       if (!detail) notFound();
-      const servers = await getPlayableSources("movie", detail.id);
+      const servers = await getLicensedSources("movie", detail.id);
       return (
         <div className="animate-fade-in">
           <HistoryTracker
@@ -154,7 +154,7 @@ async function TvWatch({
     ? episodes.find((e) => e.episodeNumber === current.episodeNumber + 1)
     : undefined;
 
-  const servers = await getPlayableSources(
+  const servers = await getLicensedSources(
     "tv",
     detail.id,
     seasonNumber,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import type { PlayableSource } from "@/lib/stream-hls";
+import type { LicensedSource } from "@/lib/stream-licensed";
 import { HlsPlayer } from "./HlsPlayer";
 
 /**
@@ -18,7 +18,7 @@ export function PlayerStage({
   storageKey,
   detailHref,
 }: {
-  sources: PlayableSource[];
+  sources: LicensedSource[];
   title: string;
   subtitle?: string;
   poster?: string | null;
