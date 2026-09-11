@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { StreamSource } from "@/lib/providers/types";
 import { PlayIcon, CloseIcon } from "@/components/icons";
-import { LogoMark } from "@/components/Logo";
-import { BrandImage } from "@/components/BrandImage";
 import { cn } from "@/lib/utils";
 
 export interface VideoEmbedProps {
@@ -46,8 +44,8 @@ export function VideoEmbed({
             label: "Pikachu",
             url:
               mediaType === "tv"
-                ? `https://nxsha.space/embed/tv/${mediaId}/${season}/${episode}?color=netflix`
-                : `https://nxsha.space/embed/movie/${mediaId}?color=netflix`,
+                ? `https://vidsrc.pro/embed/tv/${mediaId}/${season}/${episode}`
+                : `https://vidsrc.pro/embed/movie/${mediaId}`,
             kind: "embed",
           },
           {
@@ -70,7 +68,7 @@ export function VideoEmbed({
           },
           {
             id: "server4",
-            label: "Eevee",
+            label: "Snorlax",
             url:
               mediaType === "tv"
                 ? `https://vidfast.vc/tv/${mediaId}/${season}/${episode}?autoPlay=true`
@@ -98,16 +96,16 @@ export function VideoEmbed({
         {playing && canPlay ? (
           <>
             {active ? (
-              <<iframe
-  key={active.id}
-  src={active.url}
-  title={`${title} — ${active.label}`}
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-  referrerPolicy="origin"
-  sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
-  allowFullScreen
-  className="h-full w-full border-0"
-/>
+              <iframe
+                key={active.id}
+                src={active.url}
+                title={`${title} — ${active.label}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                referrerPolicy="origin"
+                sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
+                allowFullScreen
+                className="h-full w-full border-0"
+              />
             ) : trailerKey ? (
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
