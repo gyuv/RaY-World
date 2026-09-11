@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { provider } from "@/lib/providers";
 import { ProviderError, SeriesDetail } from "@/lib/providers/types";
-import { VideoEmbed } from "@/components/watch/VideoEmbed";
+import { PlayerStage } from "@/components/watch/PlayerStage";
 import { HistoryTracker } from "@/components/watch/HistoryTracker";
 import { getLicensedSources } from "@/lib/stream-licensed";
 import { MediaRail } from "@/components/MediaRail";
@@ -56,7 +56,7 @@ export default async function WatchPage({
             }}
           />
           <div className="container-page py-6">
-            <VideoEmbed
+            <PlayerStage
               title={detail.title}
               subtitle={detail.year ? String(detail.year) : undefined}
               poster={backdropUrl(detail.backdropPath, "w1280")}
@@ -178,7 +178,7 @@ async function TvWatch({
       )}
 
       <div className="container-page py-6">
-        <VideoEmbed
+        <PlayerStage
           title={detail.title}
           subtitle={`S${seasonNumber} · E${current?.episodeNumber ?? "—"}${current?.name ? `: ${current.name}` : ""}`}
           poster={stillUrl(current?.stillPath, "w780") ?? backdropUrl(detail.backdropPath, "w1280")}
