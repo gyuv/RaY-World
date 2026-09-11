@@ -16,10 +16,10 @@ export interface LicensedSource {
  * Server definitions mirroring the embed provider configuration from the player component.
  */
 const EMBED_SERVERS = [
-  { id: "server1", label: "Server 1 (Nxsha)", domain: "https://nxsha.space/embed", region: "US" },
-  { id: "server2", label: "Server 2 (Peachify)", domain: "https://peachify.top/embed", region: "US" },
-  { id: "server3", label: "Server 3 (VidSrc TO)", domain: "https://vidsrc.to/embed", region: "US" },
-  { id: "server4", label: "Server 4 (VidFast)", domain: "https://vidfast.vc", region: "US" },
+  { id: "server1", label: "Pikachu", domain: "https://nxsha.space/embed", region: "US" },
+  { id: "server2", label: "Charizard", domain: "https://peachify.top/embed", region: "US" },
+  { id: "server3", label: "Bulbasaur", domain: "https://vidsrc.to/embed", region: "US" },
+  { id: "server4", label: "Snorlax", domain: "https://vidfast.vc", region: "US" },
 ];
 
 /**
