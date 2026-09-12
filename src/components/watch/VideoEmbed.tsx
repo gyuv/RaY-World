@@ -100,8 +100,8 @@ export function VideoEmbed({
                 key={active.id}
                 src={active.url}
                 title={`${title} — ${active.label}`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-                referrerPolicy="no-referrer-when-downgrade"
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture; accelerometer; gyroscope; screen-wake-lock; web-share; clipboard-write"
+                referrerPolicy="no-referrer"
                 allowFullScreen
                 className="h-full w-full border-0"
               />
@@ -109,7 +109,8 @@ export function VideoEmbed({
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
                 title={`${title} — preview`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture; accelerometer; gyroscope; screen-wake-lock; web-share; clipboard-write"
+                referrerPolicy="no-referrer"
                 allowFullScreen
                 className="h-full w-full border-0"
               />
