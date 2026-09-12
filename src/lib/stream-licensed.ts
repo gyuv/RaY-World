@@ -1,7 +1,7 @@
 // src/lib/stream-licensed.ts
 
 export interface LicensedSource {
-  /** Stable key, e.g. "server1" */
+  /** Stable key, e.g. "server1" or "primary-hls" */
   id: string;
   /** Label shown in the player toolbar/menu */
   label: string;
@@ -13,13 +13,13 @@ export interface LicensedSource {
 }
 
 /**
- * Server definitions mirroring the embed provider configuration from the player component.
+ * Server definitions for external embed fallback.
  */
 const EMBED_SERVERS = [
-  { id: "server1", label: "Pikachu", domain: "https://nxsha.space/embed", region: "US" },
+  { id: "server1", label: "Pikachu", domain: "https://vidsrc.pro/embed", region: "US" },
   { id: "server2", label: "Charizard", domain: "https://peachify.top/embed", region: "US" },
   { id: "server3", label: "Bulbasaur", domain: "https://vidsrc.to/embed", region: "US" },
-  { id: "server4", label: "Snorlax", domain: "https://vidfast.vc/embed", region: "US" },
+  { id: "server4", label: "Snorlax", domain: "https://vidfast.vc", region: "US" },
 ];
 
 /**
@@ -33,14 +33,14 @@ function buildEmbedUrl(
   season: number = 1,
   episode: number = 1
 ): string {
-  // Server 4 (VidFast) omits the /embed path segment and uses ?autoPlay=true
+  // Server 4 (VidFast) uses ?autoPlay=true query parameter
   if (serverId === "server4") {
     return type === "tv"
       ? `${domain}/tv/${id}/${season}/${episode}?autoPlay=true`
       : `${domain}/movie/${id}?autoPlay=true`;
   }
 
-  // Server 1 (VidSrc CC via Pikachu), Server 2 (Peachify), and Server 3 (VidSrc TO)
+  // Standard embed path structure for Server 1, 2, and 3
   if (type === "tv") {
     return `${domain}/tv/${id}/${season}/${episode}`;
   }
@@ -48,25 +48,34 @@ function buildEmbedUrl(
 }
 
 /**
- * Resolve the ordered list of streaming servers for a title/episode using 
- * the embed provider mechanism from the player component.
+ * Resolve the ordered list of streaming sources for a title or episode.
+ * Prioritizes self-hosted HLS CDN streams when RAYWORLD_STREAM_BASE is configured.
  */
 export async function getLicensedSources(
   type: "movie" | "tv",
-  id: number,
+  id: number | string,
   season?: number,
   episode?: number
 ): Promise<LicensedSource[]> {
   const targetId = id || "12345";
 
-  // Check if custom self-hosted CDN base exists in environment
+  // Check if custom self-hosted or licensed CDN base exists in environment
   const base = process.env.RAYWORLD_STREAM_BASE;
   if (base) {
     const path =
       type === "movie"
-        ? `movie/${targetId}/master.m3u8`
-        : `tv/${targetId}/${season ?? 1}/${episode ?? 1}/master.m3u8`;
-    return [{ id: "primary", label: "Primary", url: `${base}/${path}`, kind: "hls" }];
+        ? `movies/${targetId}/master.m3u8`
+        : `tv/${targetId}/s${season ?? 1}_e${episode ?? 1}/master.m3u8`;
+
+    return [
+      {
+        id: "primary-hls",
+        label: "Primary (HLS)",
+        region: "Global CDN",
+        url: `${base}/${path}`,
+        kind: "hls",
+      },
+    ];
   }
 
   // Construct multi-server embed provider URLs dynamically
