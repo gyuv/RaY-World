@@ -71,8 +71,8 @@ export function VideoEmbed({
             label: "Snorlax",
             url:
               mediaType === "tv"
-                ? `https://vidsrc.pro/embed/tv/${mediaId}/${season}/${episode}`
-                : `https://vidsrc.pro/embed/movie/${mediaId}`,
+                ? `https://vidfast.vc/tv/${mediaId}/${season}/${episode}?autoPlay=true`
+                : `https://vidfast.vc/movie/${mediaId}?autoPlay=true`,
             kind: "embed",
           },
         ];
@@ -90,6 +90,14 @@ export function VideoEmbed({
   const active = configured.find((s) => s.id === activeId) ?? configured[0];
   const canPlay = Boolean(active || trailerKey);
 
+  // Helper to format source URLs via proxy if explicitly tagged as direct file streams
+  const getPlayableUrl = (source: StreamSource) => {
+    if (source.kind === "file" || source.kind === "hls") {
+      return `/api/proxy?url=${encodeURIComponent(source.url)}`;
+    }
+    return source.url;
+  };
+
   return (
     <div>
       <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black ring-1 ring-white/10">
@@ -98,7 +106,7 @@ export function VideoEmbed({
             {active ? (
               <iframe
                 key={active.id}
-                src={active.url}
+                src={getPlayableUrl(active)}
                 title={`${title} — ${active.label}`}
                 allow="autoplay; fullscreen; encrypted-media; picture-in-picture; accelerometer; gyroscope; screen-wake-lock; web-share; clipboard-write"
                 referrerPolicy="no-referrer"
