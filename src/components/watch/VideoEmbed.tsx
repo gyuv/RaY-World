@@ -71,8 +71,8 @@ export function VideoEmbed({
             label: "Snorlax",
             url:
               mediaType === "tv"
-                ? `https://vidfast.vc/tv/${mediaId}/${season}/${episode}?autoPlay=true`
-                : `https://vidfast.vc/movie/${mediaId}?autoPlay=true`,
+                ? `https://vidsrc.pro/embed/tv/${mediaId}/${season}/${episode}`
+                : `https://vidsrc.pro/embed/movie/${mediaId}`,
             kind: "embed",
           },
         ];
@@ -100,9 +100,8 @@ export function VideoEmbed({
                 key={active.id}
                 src={active.url}
                 title={`${title} — ${active.label}`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
                 referrerPolicy="origin"
-                
                 allowFullScreen
                 className="h-full w-full border-0"
               />
