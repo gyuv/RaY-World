@@ -16,7 +16,7 @@ export interface LicensedSource {
  * Server definitions for external embed fallback.
  */
 const EMBED_SERVERS = [
-  { id: "server1", label: "Pikachu", domain: "https://vidsrc.pro/embed", region: "US" },
+  { id: "server1", label: "Pikachu", domain: "https://nxsha.space/watch", region: "US" },
   { id: "server2", label: "Charizard", domain: "https://peachify.top/embed", region: "US" },
   { id: "server3", label: "Bulbasaur", domain: "https://vidsrc.to/embed", region: "US" },
   { id: "server4", label: "Snorlax", domain: "https://vidfast.vc", region: "US" },
