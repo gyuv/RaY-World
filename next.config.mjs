@@ -20,7 +20,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' https://image.tmdb.org https://i.ytimg.com data: blob:",
   "media-src 'self' blob: https:",
-  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://peachify.top https://2embed.cc https://vidsrc.sbs https://vidsrc.xyz https://embed.su https://vidsrc.to https://player.vidsrc.nl https://*.vidsrc.xyz https://*.embed.su https://*.vidsrc.to https://*.vidsrc.nl",
+  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://embed.filmu.in https://*.filmu.in https://peachify.top https://2embed.cc https://vidsrc.sbs https://vidsrc.xyz https://embed.su https://vidsrc.to https://player.vidsrc.nl https://*.vidsrc.xyz https://*.embed.su https://*.vidsrc.to https://*.vidsrc.nl",
   // The native HLS player (hls.js) fetches .m3u8 manifests + .ts/.m4s segments
   // over HTTPS from whatever authorized CDN a source points at, so connect-src
   // allows https:. Google Cast also talks to gstatic. blob: covers hls.js worker.

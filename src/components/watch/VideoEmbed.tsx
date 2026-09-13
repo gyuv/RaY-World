@@ -44,8 +44,8 @@ export function VideoEmbed({
             label: "Pikachu",
             url:
               mediaType === "tv"
-                ? `https://nxsha.space/embed/tv/${mediaId}/${season}/${episode}`
-                : `https://nxsha.space/embed/movie/${mediaId}`,
+                ? `https://embed.filmu.in/tv/${mediaId}/${season}/${episode}`
+                : `https://embed.filmu.in/movie/${mediaId}`,
             kind: "embed",
           },
           {
