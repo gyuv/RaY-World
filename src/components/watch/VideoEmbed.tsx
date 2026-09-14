@@ -143,7 +143,11 @@ export function VideoEmbed({
     () => configured.length > 0 || !!trailerKey,
   );
   const [isFs, setIsFs] = useState(false);
+  // The server list stays hidden behind a toggle so the landing is video-first
+  // (no server chips cluttering it); the bar itself is minimal.
+  const [showServers, setShowServers] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const fsTried = useRef(false);
 
   useEffect(() => {
     if (configured.length && !configured.some((s) => s.id === activeId)) {
@@ -211,6 +215,30 @@ export function VideoEmbed({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  // Upgrade to real browser fullscreen on the first user gesture after landing.
+  // Watch Now's click was on the previous page, so native fullscreen can't fire
+  // on load — the first tap on the chrome / key press here promotes it. (A tap
+  // on the video itself goes to the embed, which has its own fullscreen too.)
+  useEffect(() => {
+    if (!open) {
+      setShowServers(false);
+      fsTried.current = false;
+      return;
+    }
+    const onActivity = () => {
+      if (!fsTried.current && !fsElement() && containerRef.current) {
+        fsTried.current = true;
+        requestFs(containerRef.current);
+      }
+    };
+    window.addEventListener("pointerdown", onActivity, true);
+    window.addEventListener("keydown", onActivity, true);
+    return () => {
+      window.removeEventListener("pointerdown", onActivity, true);
+      window.removeEventListener("keydown", onActivity, true);
+    };
+  }, [open]);
+
   const iconBtn =
     "pointer-events-auto grid h-9 w-9 flex-none place-items-center rounded-full bg-black/55 text-white transition hover:bg-black/80";
   const chip = "rounded-lg px-3 py-1.5 text-xs font-bold transition";
@@ -257,55 +285,45 @@ export function VideoEmbed({
               />
             ) : null}
 
-            {/* Top control bar — title, servers (sm+), fullscreen toggle, close.
-                pointer-events pass through except on the actual controls. */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 pb-8 pt-[max(0.5rem,env(safe-area-inset-top))] sm:px-4">
-              <span className="pointer-events-auto min-w-0 truncate text-sm font-semibold text-white/90">
+            {/* Minimal always-on bar: back, title, a Servers toggle, and the
+                fullscreen button. The server LIST stays hidden until asked for,
+                so the landing is just the video — no chips cluttering it. */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-gradient-to-b from-black/60 to-transparent px-3 pb-8 pt-[max(0.5rem,env(safe-area-inset-top))] sm:px-4">
+              <button onClick={closePlayer} aria-label="Back" className={iconBtn}>
+                <CloseIcon />
+              </button>
+              <span className="pointer-events-auto min-w-0 flex-1 truncate text-sm font-semibold text-white/90">
                 {title}
               </span>
-              <div className="ml-auto flex items-center gap-1.5">
-                {configured.length > 1 && (
-                  <div className="pointer-events-auto mr-1 hidden items-center gap-1.5 sm:flex">
-                    {configured.map((s) => (
-                      <button
-                        key={s.id}
-                        onClick={() => setActiveId(s.id)}
-                        className={cn(
-                          chip,
-                          s.id === active?.id ? chipActive : chipIdle,
-                        )}
-                      >
-                        {s.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+              {configured.length > 1 && (
                 <button
-                  onClick={toggleFs}
-                  aria-label={isFs ? "Exit fullscreen" : "Enter fullscreen"}
-                  className={iconBtn}
+                  onClick={() => setShowServers((v) => !v)}
+                  aria-expanded={showServers}
+                  className="pointer-events-auto rounded-full bg-black/55 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-black/80"
                 >
-                  {isFs ? <CompressIcon /> : <ExpandIcon />}
+                  Servers
                 </button>
-                <button
-                  onClick={closePlayer}
-                  aria-label="Close player"
-                  className={iconBtn}
-                >
-                  <CloseIcon />
-                </button>
-              </div>
+              )}
+              <button
+                onClick={toggleFs}
+                aria-label={isFs ? "Exit fullscreen" : "Enter fullscreen"}
+                className={iconBtn}
+              >
+                {isFs ? <CompressIcon /> : <ExpandIcon />}
+              </button>
             </div>
 
-            {/* Bottom server strip on phones (where the top row is hidden). */}
-            {configured.length > 1 && (
-              <div className="no-scrollbar pointer-events-none absolute inset-x-0 bottom-0 z-20 flex gap-2 overflow-x-auto bg-gradient-to-t from-black/70 to-transparent px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-8 sm:hidden">
+            {/* Server picker — only when the Servers toggle is on. */}
+            {showServers && configured.length > 1 && (
+              <div className="no-scrollbar pointer-events-auto absolute right-3 top-14 z-30 flex max-w-[80vw] flex-wrap justify-end gap-2 rounded-2xl bg-black/85 p-3 sm:top-16">
                 {configured.map((s) => (
                   <button
                     key={s.id}
-                    onClick={() => setActiveId(s.id)}
+                    onClick={() => {
+                      setActiveId(s.id);
+                      setShowServers(false);
+                    }}
                     className={cn(
-                      "pointer-events-auto flex-none",
                       chip,
                       s.id === active?.id ? chipActive : chipIdle,
                     )}
