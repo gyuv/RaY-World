@@ -134,7 +134,14 @@ export function VideoEmbed({
   const [activeId, setActiveId] = useState<string | undefined>(configured[0]?.id);
   // `open` = the immersive full-viewport player is showing (and the iframe is
   // mounted). Closed = the inline poster preview + server list.
-  const [open, setOpen] = useState(false);
+  // Land straight in the immersive player: arriving on the watch page (via
+  // "Watch Now") opens it immediately, so the whole page IS the player. Native
+  // browser fullscreen still needs a user gesture, so that only kicks in via
+  // the fullscreen button / a tap — but the CSS overlay already fills the
+  // viewport (and the whole WebView in the app) on landing.
+  const [open, setOpen] = useState<boolean>(
+    () => configured.length > 0 || !!trailerKey,
+  );
   const [isFs, setIsFs] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -218,10 +225,13 @@ export function VideoEmbed({
       <div
         ref={containerRef}
         className={cn(
-          "relative overflow-hidden bg-black",
+          // Exactly one position class per state — never both, or Tailwind's
+          // source order lets `relative` beat `fixed` and the overlay stops
+          // covering the page.
+          "overflow-hidden bg-black",
           open
             ? "fixed inset-0 z-[90] h-[100dvh] w-screen rounded-none"
-            : "aspect-video w-full rounded-2xl ring-1 ring-white/10",
+            : "relative aspect-video w-full rounded-2xl ring-1 ring-white/10",
         )}
       >
         {open && canPlay ? (
