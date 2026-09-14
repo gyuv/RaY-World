@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { backdropUrl, posterUrl, titleLogoUrl } from "@/lib/images";
 import { getLanguageName } from "@/lib/config/languages";
@@ -32,13 +32,55 @@ const INTERVAL = 7000;
 export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  // Auto-advance only while the hero is on-screen and the tab is visible.
+  const [canAuto, setCanAuto] = useState(true);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const reduceMotionRef = useRef(false);
   const count = items.length;
 
   useEffect(() => {
-    if (count <= 1 || paused) return;
+    try {
+      reduceMotionRef.current = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+    } catch {
+      reduceMotionRef.current = false;
+    }
+  }, []);
+
+  // Pause the rotation (which crossfades a full-viewport blurred wash) whenever
+  // the hero has scrolled out of view or the tab is backgrounded, so we never
+  // do that repaint work when nobody can see it.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    let inView = true;
+    let visible = typeof document === "undefined" || !document.hidden;
+    const recompute = () => setCanAuto(inView && visible);
+    const io = new IntersectionObserver(
+      ([e]) => {
+        inView = e.isIntersecting;
+        recompute();
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(el);
+    const onVis = () => {
+      visible = !document.hidden;
+      recompute();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (count <= 1 || paused || !canAuto || reduceMotionRef.current) return;
     const t = setInterval(() => setActive((a) => (a + 1) % count), INTERVAL);
     return () => clearInterval(t);
-  }, [count, paused]);
+  }, [count, paused, canAuto]);
 
   if (count === 0) return null;
   const go = (n: number) => setActive(((n % count) + count) % count);
@@ -55,6 +97,7 @@ export function HeroShowcase({ items }: { items: FeaturedItem[] }) {
 
   return (
     <section
+      ref={sectionRef}
       className="relative -mt-24 sm:-mt-28 lg:-mt-32"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}

@@ -35,7 +35,7 @@ export function MediaCard({ item, className, priority }: MediaCardProps) {
 
         {/* Top meta */}
         <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-2">
-          <span className="inline-flex items-center gap-1 rounded-md bg-ink-950/70 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/80 ring-1 ring-white/10 backdrop-blur">
+          <span className="inline-flex items-center gap-1 rounded-md bg-ink-950/85 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/80 ring-1 ring-white/10">
             {item.type === "tv" ? (
               <TvIcon className="text-[0.9em]" />
             ) : (
@@ -73,7 +73,7 @@ export function MediaCard({ item, className, priority }: MediaCardProps) {
 
           {/* Genre/lang hint bottom-left */}
           {language && (
-            <span className="pointer-events-none absolute bottom-3 left-3 rounded-md bg-ink-950/70 px-1.5 py-0.5 text-[10px] font-semibold text-white/80 ring-1 ring-white/10 backdrop-blur">
+            <span className="pointer-events-none absolute bottom-3 left-3 rounded-md bg-ink-950/85 px-1.5 py-0.5 text-[10px] font-semibold text-white/80 ring-1 ring-white/10">
               {language}
             </span>
           )}
