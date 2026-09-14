@@ -42,8 +42,21 @@ export function IntroSplash() {
     }
 
     document.body.style.overflow = "hidden";
-    const leaveT = setTimeout(() => setLeaving(true), DURATION - 600);
-    const endT = setTimeout(dismiss, DURATION);
+    // On low-power / TV screens the intro runs the cheap opacity-only variant
+    // (see globals.css), so hold it for less time — the elaborate sequence the
+    // full timing is tuned for isn't playing there.
+    let lite = false;
+    try {
+      lite =
+        window.matchMedia("(pointer: coarse)").matches ||
+        window.matchMedia("(min-width: 1920px)").matches ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch {
+      lite = false;
+    }
+    const total = lite ? 2400 : DURATION;
+    const leaveT = setTimeout(() => setLeaving(true), total - 600);
+    const endT = setTimeout(dismiss, total);
 
     return () => {
       clearTimeout(leaveT);
@@ -94,7 +107,7 @@ export function IntroSplash() {
           return (
             <span
               key={i}
-              className="h-full flex-1 origin-bottom rounded-full"
+              className="intro-strand h-full flex-1 origin-bottom rounded-full"
               style={{
                 maxWidth: "8px",
                 background: `linear-gradient(to top, transparent, ${c.body} 50%, ${c.tip} 100%)`,
@@ -112,14 +125,14 @@ export function IntroSplash() {
 
       {/* Center stage: flash + the header logo, with a final zoom. */}
       <div
-        className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
+        className="intro-stage absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
         style={{
           willChange: "transform",
           animation: "nf-zoom 0.8s ease-in 3.1s forwards",
         }}
       >
         <span
-          className="pointer-events-none absolute h-[52vmin] w-[52vmin] rounded-full"
+          className="intro-flash pointer-events-none absolute h-[52vmin] w-[52vmin] rounded-full"
           style={{
             background:
               "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(236,72,153,0.6) 35%, rgba(168,85,247,0.3) 60%, transparent 72%)",
@@ -130,6 +143,7 @@ export function IntroSplash() {
         />
 
         <div
+          className="intro-mark"
           style={{
             opacity: 0,
             willChange: "transform, opacity",

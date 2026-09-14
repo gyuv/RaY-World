@@ -332,6 +332,58 @@ body {
   display: none !important;
 }
 
+/*
+ * Smooth intro on low-power / TV screens. The full "ta-dum" sequence animates
+ * a CSS blur filter on the large logo image (nf-mark), scales that image
+ * (nf-zoom), bursts a big gradient flash (nf-flash) and runs 12 animated
+ * gradient strands — animating blur/scale on a large bitmap janks badly on
+ * weak GPUs (smart-TV WebViews). There we drop the expensive pieces and reveal
+ * the mark with a cheap opacity-only fade. Pure CSS so it also applies to the
+ * server-rendered overlay before any JS runs. !important beats the inline
+ * animation styles the component sets.
+ */
+@keyframes nf-mark-lite {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (pointer: coarse), (min-width: 1920px) {
+  .intro-strand,
+  .intro-flash {
+    display: none !important;
+  }
+  .intro-stage {
+    animation: none !important;
+    transform: none !important;
+  }
+  .intro-mark {
+    filter: none !important;
+    animation: nf-mark-lite 600ms ease-out both !important;
+  }
+}
+
+/* Motion-sensitive users: no strands/flash/zoom either. The global
+   reduced-motion rule already collapses the mark's reveal to a static frame. */
+@media (prefers-reduced-motion: reduce) {
+  .intro-strand,
+  .intro-flash {
+    display: none !important;
+  }
+  .intro-stage {
+    animation: none !important;
+    transform: none !important;
+  }
+  .intro-mark {
+    filter: none !important;
+  }
+}
+
 /* Seamless marquee for the providers strip (two copies -> shift by half). */
 @keyframes marquee {
   from {
