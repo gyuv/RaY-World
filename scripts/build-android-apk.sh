@@ -15,6 +15,11 @@
 #
 # If you already have an Android SDK, set ANDROID_HOME (or ANDROID_SDK_ROOT)
 # and the script will use it instead of downloading the command-line tools.
+# When that SDK already contains the required platform, build-tools and
+# platform-tools, the script skips the download and every sdkmanager call,
+# so it works fully offline (no access to dl.google.com needed).
+#
+# To force the offline path even if detection is unsure, set SKIP_SDK_SETUP=1.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -30,25 +35,50 @@ CMDLINE_TOOLS_URL="https://dl.google.com/android/repository/${CMDLINE_TOOLS_ZIP}
 SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/android-sdk}}"
 SDKMANAGER="$SDK/cmdline-tools/latest/bin/sdkmanager"
 
-if [ ! -x "$SDKMANAGER" ]; then
-  echo ">> Installing Android command-line tools into $SDK"
-  mkdir -p "$SDK/cmdline-tools"
-  tmp="$(mktemp -d)"
-  curl -fSL --retry 4 -o "$tmp/cmdtools.zip" "$CMDLINE_TOOLS_URL"
-  rm -rf "$SDK/cmdline-tools/latest"
-  unzip -q -o "$tmp/cmdtools.zip" -d "$SDK/cmdline-tools"
-  mv "$SDK/cmdline-tools/cmdline-tools" "$SDK/cmdline-tools/latest"
-  rm -rf "$tmp"
-fi
+# Turn "platforms;android-35" / "build-tools;35.0.0" into on-disk paths so we
+# can tell whether a pre-installed SDK already has everything the build needs.
+PLATFORM_DIR="$SDK/${PLATFORM/;//}"
+BUILD_TOOLS_DIR="$SDK/${BUILD_TOOLS/;//}"
+
+sdk_is_complete() {
+  [ -d "$PLATFORM_DIR" ] && [ -d "$BUILD_TOOLS_DIR" ] && [ -d "$SDK/platform-tools" ]
+}
 
 export ANDROID_HOME="$SDK"
 export ANDROID_SDK_ROOT="$SDK"
 
-echo ">> Accepting SDK licenses"
-yes | "$SDKMANAGER" --licenses >/dev/null || true
+if [ "${SKIP_SDK_SETUP:-0}" = "1" ] || sdk_is_complete; then
+  # A usable SDK is already present — don't download anything and don't call
+  # sdkmanager (both need outbound access to Google's Android hosts).
+  echo ">> Using pre-installed Android SDK at $SDK (skipping download + sdkmanager)"
+  if ! sdk_is_complete; then
+    echo "!! SKIP_SDK_SETUP=1 but the SDK looks incomplete. Expected:" >&2
+    echo "     $PLATFORM_DIR" >&2
+    echo "     $BUILD_TOOLS_DIR" >&2
+    echo "     $SDK/platform-tools" >&2
+    echo "   Install these packages (matching android/variables.gradle) and retry." >&2
+    exit 1
+  fi
+else
+  if [ ! -x "$SDKMANAGER" ]; then
+    echo ">> Installing Android command-line tools into $SDK"
+    echo "   (needs outbound access to dl.google.com — set ANDROID_HOME to a"
+    echo "    pre-installed SDK to build offline instead)"
+    mkdir -p "$SDK/cmdline-tools"
+    tmp="$(mktemp -d)"
+    curl -fSL --retry 4 -o "$tmp/cmdtools.zip" "$CMDLINE_TOOLS_URL"
+    rm -rf "$SDK/cmdline-tools/latest"
+    unzip -q -o "$tmp/cmdtools.zip" -d "$SDK/cmdline-tools"
+    mv "$SDK/cmdline-tools/cmdline-tools" "$SDK/cmdline-tools/latest"
+    rm -rf "$tmp"
+  fi
 
-echo ">> Installing SDK packages: platform-tools $PLATFORM $BUILD_TOOLS"
-"$SDKMANAGER" "platform-tools" "$PLATFORM" "$BUILD_TOOLS"
+  echo ">> Accepting SDK licenses"
+  yes | "$SDKMANAGER" --licenses >/dev/null || true
+
+  echo ">> Installing SDK packages: platform-tools $PLATFORM $BUILD_TOOLS"
+  "$SDKMANAGER" "platform-tools" "$PLATFORM" "$BUILD_TOOLS"
+fi
 
 # --- 2. Point the Gradle build at the SDK ---
 echo "sdk.dir=$SDK" > android/local.properties

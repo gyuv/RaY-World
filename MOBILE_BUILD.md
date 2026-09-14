@@ -51,6 +51,28 @@ It installs the Android command-line tools + SDK packages if needed, syncs
 Capacitor, runs `./gradlew assembleDebug`, and copies the result to
 `./app-universal.apk`.
 
+### Using a pre-installed SDK (offline / no `dl.google.com`)
+
+If you already have an Android SDK, point the script at it and it skips the
+download **and** every `sdkmanager` call — the parts that need outbound access
+to Google's hosts — so the build runs fully offline:
+
+```bash
+export ANDROID_HOME=/path/to/android-sdk   # or ANDROID_SDK_ROOT
+bash scripts/build-android-apk.sh
+```
+
+The offline path is taken automatically when that SDK already contains the
+packages matching `android/variables.gradle`:
+
+- `platforms/android-35`
+- `build-tools/35.0.0`
+- `platform-tools`
+
+If those are present under a non-standard layout and detection misses them, set
+`SKIP_SDK_SETUP=1` to force the offline path (the script still fails fast with a
+clear message if a required package is genuinely absent).
+
 ### Manual steps (equivalent)
 
 ```bash
@@ -111,6 +133,12 @@ Leanback launcher, so a single build serves both Android buttons; set
 ## Building inside the Claude Code web sandbox
 
 This repo's Claude Code environment blocks `dl.google.com` by egress policy, so
-the final `sdkmanager` / `gradlew` step **cannot run there** — run the script on
-a local machine or CI (GitHub Actions `ubuntu-latest` works out of the box)
-where Google's hosts are reachable.
+the script **cannot download** the SDK there. Two ways forward:
+
+- **Run it where Google's hosts are reachable** — a local machine or CI
+  (GitHub Actions `ubuntu-latest` works out of the box).
+- **Provide a pre-installed SDK** (platform-35, build-tools 35.0.0,
+  platform-tools) and set `ANDROID_HOME` to it — the script then skips the
+  download and all `sdkmanager` calls and builds offline. See
+  [Using a pre-installed SDK](#using-a-pre-installed-sdk-offline--no-dlgooglecom)
+  above.
