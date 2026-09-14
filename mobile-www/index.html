@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#02060f" />
+    <title>RaY-World</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        display: grid;
+        place-items: center;
+        gap: 0;
+        background:
+          radial-gradient(1200px 640px at 50% -10%, rgba(150,170,235,0.18), transparent 60%),
+          radial-gradient(900px 560px at 100% 12%, rgba(168,85,247,0.12), transparent 55%),
+          #0a0f1e;
+        color: #fff;
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        text-align: center;
+        padding: 24px;
+      }
+      .wrap { display: grid; gap: 20px; place-items: center; }
+      .mark {
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        font-size: clamp(28px, 6vw, 56px);
+        background: linear-gradient(100deg, #b4770a, #ffe58a 30%, #fff6d6 45%, #ffe58a 60%, #d99406);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .spinner {
+        width: 44px; height: 44px; border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.15);
+        border-top-color: #ffc933;
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .msg { color: rgba(255,255,255,0.7); font-size: 15px; max-width: 30ch; line-height: 1.5; }
+      .retry {
+        margin-top: 4px; display: none;
+        border: 0; border-radius: 999px; cursor: pointer;
+        padding: 12px 22px; font-size: 15px; font-weight: 700; color: #02060f;
+        background: linear-gradient(120deg, #ffe58a, #ffc933 45%, #d99406);
+      }
+      .retry:focus-visible { outline: 3px solid #ffd75e; outline-offset: 3px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="mark">RaY&#8209;World</div>
+      <div class="spinner" id="spinner" aria-hidden="true"></div>
+      <p class="msg" id="msg">Loading RaY&#8209;World&hellip;</p>
+      <button class="retry" id="retry" type="button">Retry</button>
+    </div>
+    <script>
+      // With server.url set, Capacitor normally loads the live site directly.
+      // This page is the offline/failure fallback: try to reach the site and,
+      // if online, hand off to it; otherwise show a retry control.
+      var LIVE = "https://rayworld.vercel.app/";
+      function go() {
+        try { window.location.replace(LIVE); } catch (e) { window.location.href = LIVE; }
+      }
+      function offline() {
+        document.getElementById("spinner").style.display = "none";
+        document.getElementById("msg").textContent =
+          "Can't reach RaY-World. Check your connection and try again.";
+        document.getElementById("retry").style.display = "inline-block";
+      }
+      document.getElementById("retry").addEventListener("click", function () {
+        document.getElementById("spinner").style.display = "block";
+        document.getElementById("retry").style.display = "none";
+        document.getElementById("msg").textContent = "Loading RaY‑World…";
+        attempt();
+      });
+      function attempt() {
+        if (navigator.onLine === false) { offline(); return; }
+        go();
+      }
+      window.addEventListener("load", function () { setTimeout(attempt, 300); });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android TV launcher banner (320x180 dp). Brand-dark ground with a gold
+     play mark; keeps the RaY-World identity on the TV home row. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+
+    <!-- Background -->
+    <path
+        android:pathData="M0,0 h320 v180 h-320 z"
+        android:fillColor="#0A0F1E" />
+
+    <!-- Soft top glow -->
+    <path android:pathData="M0,0 h320 v96 h-320 z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="0" android:startY="0"
+                android:endX="0" android:endY="96"
+                android:startColor="#33A8B4F0"
+                android:endColor="#000A0F1E" />
+        </aapt:attr>
+    </path>
+
+    <!-- Gold ring -->
+    <path
+        android:pathData="M96,90 m-40,0 a40,40 0 1,0 80,0 a40,40 0 1,0 -80,0 Z"
+        android:strokeWidth="6"
+        android:strokeColor="#FFC933"
+        android:fillColor="#00000000" />
+
+    <!-- Play triangle -->
+    <path
+        android:pathData="M84,70 L84,110 L118,90 Z"
+        android:fillColor="#FFD75E" />
+
+    <!-- Wordmark bars (stylized 'RAY WORLD') -->
+    <path
+        android:pathData="M168,74 h120 v10 h-120 z"
+        android:fillColor="#FFE58A" />
+    <path
+        android:pathData="M168,96 h84 v8 h-84 z"
+        android:fillColor="#66FFFFFF" />
+
+</vector>

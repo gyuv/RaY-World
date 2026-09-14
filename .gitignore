@@ -34,3 +34,13 @@ next-env.d.ts.bak
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# capacitor / android native build artifacts
+/android/app/build
+/android/build
+/android/.gradle
+/android/captures
+/android/local.properties
+# generated APK delivered to the project root
+/app-universal.apk
+*.apk

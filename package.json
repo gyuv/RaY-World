@@ -8,9 +8,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "cap:sync": "cap sync android",
+    "android:apk": "bash scripts/build-android-apk.sh"
   },
   "dependencies": {
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/cli": "^7.6.9",
+    "@capacitor/core": "^7.6.9",
     "hls.js": "^1.5.17",
     "next": "14.2.35",
     "react": "18.3.1",
