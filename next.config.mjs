@@ -54,6 +54,20 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
+    // Serve TMDB posters/backdrops straight from TMDB's global CDN instead of
+    // routing them through Vercel's Image Optimizer. For a large catalog on the
+    // Hobby/free tier this is the single biggest win: it avoids burning the
+    // limited image-optimization transformation quota, and removes an extra
+    // network hop (Vercel fetch -> transform -> cache), so images start
+    // downloading from a fast CDN immediately. We already request the exact
+    // size we need per use (posterUrl(path, "w500"), backdropUrl(..., "w1280"),
+    // etc. in src/lib/images.ts), and next/image still gives us lazy-loading,
+    // correct sizing and no layout shift with unoptimized set.
+    //
+    // Trade-off: images stay as TMDB's (already well-compressed) JPEGs rather
+    // than being auto-converted to WebP. On the free tier, avoiding the
+    // optimizer's quota + hop is the better net call for speed.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -67,6 +81,21 @@ const nextConfig = {
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+      {
+        // Long-lived caching for the static brand assets in /public (logos,
+        // app icon, intro animation). These are not content-hashed, so we use a
+        // strong cache with stale-while-revalidate: returning visitors get them
+        // instantly from cache, and any future change still propagates. Next.js
+        // already sets immutable 1-year caching on hashed /_next/static and
+        // /_next/image responses automatically on Vercel, so those are covered.
+        source: "/brand/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=604800, stale-while-revalidate=2592000",
+          },
+        ],
       },
     ];
   },
