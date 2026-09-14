@@ -84,6 +84,30 @@ D-pad because the web UI already has focus rings and a remote-friendly layout.
 > Note: this is an **unsigned debug** build for testing. For Play Store / stable
 > distribution, produce a signed release (`assembleRelease` with a keystore).
 
+## Download buttons on the site
+
+The footer has a **Get the app** section with three options: Android (phone /
+tablet), Android TV, and the Web App. The Android buttons point to the APK
+published by the workflow above at a stable URL:
+
+```
+https://github.com/gyuv/RaY-World/releases/download/apk-latest/app-universal.apk
+```
+
+Run the **Build Android APK** workflow once and it creates/updates the
+`apk-latest` release with the APK, so the buttons resolve. All three targets are
+overridable at build time (e.g. in Vercel env vars) without code changes:
+
+| Env var                   | Controls                | Default                                   |
+| ------------------------- | ----------------------- | ----------------------------------------- |
+| `NEXT_PUBLIC_APK_URL`     | Android (phone/tablet)  | `…/releases/download/apk-latest/app-universal.apk` |
+| `NEXT_PUBLIC_APK_TV_URL`  | Android TV              | same as `NEXT_PUBLIC_APK_URL`             |
+| `NEXT_PUBLIC_WEBAPP_URL`  | Web App link            | `https://rayworld.vercel.app`             |
+
+The one universal APK already carries both the phone launcher and the Android TV
+Leanback launcher, so a single build serves both Android buttons; set
+`NEXT_PUBLIC_APK_TV_URL` only if you later ship a TV-specific build.
+
 ## Building inside the Claude Code web sandbox
 
 This repo's Claude Code environment blocks `dl.google.com` by egress policy, so

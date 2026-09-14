@@ -3,6 +3,18 @@ import { Logo } from "./Logo";
 import { BrandImage } from "./BrandImage";
 import { LANGUAGES } from "@/lib/config/languages";
 import { GENRES } from "@/lib/config/genres";
+import { DownloadIcon, TvIcon, GlobeIcon } from "./icons";
+
+// Download targets. All three are overridable at build time via env so you can
+// point them at a new release, a TV-specific build, or a different web host
+// without touching code. The Android defaults resolve to the universal APK
+// published by .github/workflows/android-apk.yml (one build carries both the
+// phone launcher and the Android TV Leanback launcher).
+const APK_URL =
+  process.env.NEXT_PUBLIC_APK_URL ??
+  "https://github.com/gyuv/RaY-World/releases/download/apk-latest/app-universal.apk";
+const APK_TV_URL = process.env.NEXT_PUBLIC_APK_TV_URL ?? APK_URL;
+const WEBAPP_URL = process.env.NEXT_PUBLIC_WEBAPP_URL ?? "https://rayworld.vercel.app";
 
 export function Footer() {
   return (
@@ -48,6 +60,45 @@ export function Footer() {
         </FooterCol>
       </div>
 
+      {/* Get the app — Android (phone/tablet), Android TV, and the Web App. */}
+      <div className="border-t border-white/10">
+        <div className="container-page py-10">
+          <h3 className="mb-1 text-sm font-semibold uppercase tracking-wider text-white/80">
+            Get the app
+          </h3>
+          <p className="mb-5 text-sm text-white/45">
+            Install RaY-World on your phone, your Android TV, or use it right in
+            the browser.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <DownloadCard
+              href={APK_URL}
+              download
+              Icon={DownloadIcon}
+              title="Android App"
+              subtitle="Phone &amp; tablet · APK"
+            />
+            <DownloadCard
+              href={APK_TV_URL}
+              download
+              Icon={TvIcon}
+              title="Android TV"
+              subtitle="Leanback build · sideload APK"
+            />
+            <DownloadCard
+              href={WEBAPP_URL}
+              Icon={GlobeIcon}
+              title="Web App"
+              subtitle="Open in browser · installable PWA"
+            />
+          </div>
+          <p className="mt-3 text-xs text-white/30">
+            The Android build is an unsigned APK — enable “Install unknown apps”
+            for your browser/file manager, then open the downloaded file.
+          </p>
+        </div>
+      </div>
+
       <div className="container-page space-y-2 border-t border-white/10 py-6 text-xs text-white/40">
         <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
           <p>© {new Date().getFullYear()} RaY-World. All rights reserved.</p>
@@ -67,6 +118,39 @@ export function Footer() {
         </p>
       </div>
     </footer>
+  );
+}
+
+function DownloadCard({
+  href,
+  Icon,
+  title,
+  subtitle,
+  download,
+}: {
+  href: string;
+  Icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  subtitle: string;
+  download?: boolean;
+}) {
+  return (
+    <a
+      href={href}
+      {...(download ? { download: "" } : {})}
+      rel="noopener"
+      className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 transition hover:border-white/25 hover:bg-white/[0.08] focus:outline-none focus-visible:ring-2 focus-visible:ring-ray-400"
+    >
+      <span className="grid h-11 w-11 flex-none place-items-center rounded-xl bg-ray-gradient text-ink-950">
+        <Icon className="text-xl" />
+      </span>
+      <span className="min-w-0">
+        <span className="block text-sm font-semibold text-white/90 group-hover:text-white">
+          {title}
+        </span>
+        <span className="block truncate text-xs text-white/45">{subtitle}</span>
+      </span>
+    </a>
   );
 }
 

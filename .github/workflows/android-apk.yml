@@ -6,6 +6,9 @@ name: Build Android APK (phone + TV)
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -48,3 +51,18 @@ jobs:
           name: app-universal-apk
           path: app-universal.apk
           if-no-files-found: error
+
+      # Publish to a stable "apk-latest" release so the site's download buttons
+      # resolve to a permanent URL:
+      #   https://github.com/<owner>/<repo>/releases/download/apk-latest/app-universal.apk
+      - name: Publish APK to apk-latest release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-latest
+          name: Latest Android APK (phone + TV)
+          body: |
+            Universal RaY-World Android build (phone/tablet + Android TV Leanback).
+            Unsigned debug APK — enable "Install unknown apps", then open the file.
+            Built from ${{ github.sha }}.
+          files: app-universal.apk
+          make_latest: "false"
