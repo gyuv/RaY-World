@@ -108,6 +108,10 @@ body {
 @media (pointer: coarse), (min-width: 1920px) {
   html {
     scroll-behavior: auto;
+    /* Keep D-pad-focused cards clear of the sticky navbar when the remote
+       scrolls them into view (see TvNavigation). */
+    scroll-padding-top: 6rem;
+    scroll-padding-bottom: 4rem;
   }
 
   .glass,

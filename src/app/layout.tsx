@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { IntroSplash } from "@/components/IntroSplash";
 import { SiteGuard } from "@/components/SiteGuard";
+import { TvNavigation } from "@/components/TvNavigation";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ray-world.example"),
@@ -62,6 +63,7 @@ export default function RootLayout({
           }}
         />
         <SiteGuard />
+        <TvNavigation />
         <IntroSplash />
         <a
           href="#main"
