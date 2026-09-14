@@ -70,7 +70,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <Navbar />
-        <main id="main" className="pb-24 lg:pb-0">
+        <main id="main" className="pb-28">
           {children}
         </main>
         <Footer />

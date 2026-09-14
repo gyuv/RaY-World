@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Hls from "hls.js";
+import type HlsType from "hls.js";
 
 interface ProxiedPlayerProps {
   embedUrl: string;
@@ -15,23 +15,31 @@ export function ProxiedPlayer({ embedUrl }: ProxiedPlayerProps) {
     const video = videoRef.current;
     if (!video) return;
 
-    if (Hls.isSupported()) {
-      const hls = new Hls({
-        xhrSetup: (xhr) => {
-          xhr.withCredentials = false;
-        },
-      });
+    let hls: HlsType | null = null;
+    let cancelled = false;
 
-      hls.loadSource(proxyEndpoint);
-      hls.attachMedia(video);
-
-      return () => {
-        hls.destroy();
-      };
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      // Fallback native Safari HLS support
+    // Lazy-load hls.js (~130KB) only when this player actually mounts, so it is
+    // never pulled into the initial/route JS bundle. Native HLS (Safari) skips
+    // the download entirely.
+    if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = proxyEndpoint;
+    } else {
+      import("hls.js").then(({ default: Hls }) => {
+        if (cancelled || !video || !Hls.isSupported()) return;
+        hls = new Hls({
+          xhrSetup: (xhr) => {
+            xhr.withCredentials = false;
+          },
+        });
+        hls.loadSource(proxyEndpoint);
+        hls.attachMedia(video);
+      });
     }
+
+    return () => {
+      cancelled = true;
+      hls?.destroy();
+    };
   }, [proxyEndpoint]);
 
   return (

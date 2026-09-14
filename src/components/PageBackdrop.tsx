@@ -9,7 +9,12 @@ import Image from "next/image";
 export function PageBackdrop({ src }: { src: string | null }) {
   if (!src) return null;
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      // Promote to its own compositor layer so the blurred wash is painted once
+      // and never re-rasterised while the page scrolls above it.
+      style={{ transform: "translateZ(0)", willChange: "transform" }}
+    >
       <Image
         src={src}
         alt=""
@@ -18,7 +23,7 @@ export function PageBackdrop({ src }: { src: string | null }) {
         sizes="100vw"
         // Same crop/anchor + brightness as the detail hero backdrop, so the hero
         // dissolves into an identical but blurred picture — no seam.
-        className="scale-110 object-cover object-top blur-[44px]"
+        className="page-backdrop-img scale-110 object-cover object-top blur-[44px]"
       />
       <div
         className="absolute inset-0"
