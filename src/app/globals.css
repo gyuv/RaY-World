@@ -97,6 +97,47 @@ body {
   }
 }
 
+/*
+ * Scroll performance for low-power GPUs (smart-TV browsers, many Android
+ * devices). Live `backdrop-filter` blur is recomputed on every scroll frame
+ * and is the single biggest cause of janky, hard-to-control scrolling on those
+ * displays. On coarse-pointer / TV screens we drop the live blur for a slightly
+ * more opaque solid panel (still legible), and let D-pad key-presses scroll
+ * instantly instead of animating each step.
+ */
+@media (pointer: coarse), (min-width: 1920px) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .glass,
+  .card-surface,
+  .card-premium,
+  .nav-bubble {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .nav-bubble {
+    background-color: rgba(6, 9, 20, 0.92);
+  }
+  .glass {
+    background-color: rgba(20, 26, 46, 0.85);
+  }
+  .card-surface {
+    background-color: rgba(6, 18, 41, 0.85);
+  }
+  .card-premium {
+    background-color: rgba(6, 18, 41, 0.9);
+  }
+
+  /* The fixed, heavily-blurred page wash is expensive to fill at TV
+     resolutions — soften the radius so it costs far less per frame. */
+  .page-backdrop-img {
+    filter: blur(22px) !important;
+  }
+}
+
 /* Thin, on-brand scrollbars for horizontal rails. */
 .no-scrollbar {
   -ms-overflow-style: none;
@@ -154,6 +195,14 @@ body {
   .glass {
     @apply rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl;
     box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Floating bottom navigation "bubble" — frosted, translucent pill. */
+  .nav-bubble {
+    @apply backdrop-blur-xl;
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+      0 10px 40px -12px rgba(0, 0, 0, 0.85);
   }
 
   /* Premium glass panel with a faint gold top-edge highlight. */

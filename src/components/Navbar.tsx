@@ -6,27 +6,12 @@ import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 import { BrandImage } from "./BrandImage";
 import { SearchBox } from "./SearchBox";
-import {
-  MenuIcon,
-  CloseIcon,
-  SearchIcon,
-  GearIcon,
-  HomeIcon,
-  FilmIcon,
-  TvIcon,
-  BookmarkIcon,
-} from "./icons";
+import { MenuIcon, CloseIcon, SearchIcon } from "./icons";
 import { cn } from "@/lib/utils";
 
-// Compact primary nav (desktop pill) — icon + label.
-const PRIMARY = [
-  { href: "/", label: "Home", Icon: HomeIcon },
-  { href: "/movies", label: "Movies", Icon: FilmIcon },
-  { href: "/series", label: "Shows", Icon: TvIcon },
-  { href: "/watchlist", label: "My List", Icon: BookmarkIcon },
-];
-
-// Full list for the mobile menu.
+// Full category list — reached from the top-bar "more" menu. Primary
+// destinations (Home / Movies / Shows / Trending / My List) live in the
+// floating bottom bubble; this covers the extra language & discovery pages.
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/movies", label: "Movies" },
@@ -55,9 +40,8 @@ export function Navbar() {
     <header
       className={cn(
         "sticky top-0 z-40 transition-colors duration-300",
-        // Transparent at all times (including on scroll). Only the open
-        // mobile menu / search panel gets a backdrop so its content stays
-        // legible; the floating nav pill and logo carry their own contrast.
+        // Transparent at rest; only the open menu / search panel gets a
+        // backdrop so its content stays legible.
         menuOpen || searchOpen
           ? "border-b border-white/10 bg-ink-950/80 backdrop-blur-xl"
           : "bg-transparent",
@@ -82,57 +66,19 @@ export function Navbar() {
           />
         </Link>
 
-        {/* Right-aligned glass nav pill (desktop) */}
-        <nav className="ml-auto -mt-1 hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.07] p-1.5 backdrop-blur-xl sm:-mt-2 lg:flex">
-          {PRIMARY.map(({ href, label, Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition",
-                isActive(href)
-                  ? "bg-white text-ink-950 shadow"
-                  : "text-white/75 hover:bg-white/10 hover:text-white",
-              )}
-            >
-              <Icon className="text-base" />
-              {label}
-            </Link>
-          ))}
-
-          <span className="mx-1 h-6 w-px bg-white/15" />
-
+        {/* Actions — search + more-categories menu, at every size */}
+        <div className="ml-auto -mt-1 flex items-center gap-1">
           <button
             type="button"
             aria-label="Search"
             aria-expanded={searchOpen}
             onClick={() => setSearchOpen((v) => !v)}
             className={cn(
-              "grid h-9 w-9 place-items-center rounded-full transition",
+              "grid h-10 w-10 place-items-center rounded-full transition tv:h-12 tv:w-12",
               searchOpen
                 ? "bg-white text-ink-950"
                 : "text-white/80 hover:bg-white/10 hover:text-white",
             )}
-          >
-            <SearchIcon className="text-lg" />
-          </button>
-
-          <Link
-            href="/genres"
-            aria-label="Settings & categories"
-            className="grid h-9 w-9 place-items-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
-          >
-            <GearIcon className="text-lg" />
-          </Link>
-        </nav>
-
-        {/* Mobile actions */}
-        <div className="ml-auto -mt-1 flex items-center gap-1 lg:hidden">
-          <button
-            type="button"
-            aria-label="Search"
-            onClick={() => setSearchOpen((v) => !v)}
-            className="grid h-10 w-10 place-items-center rounded-full text-white/80 hover:bg-white/10"
           >
             <SearchIcon className="text-xl" />
           </button>
@@ -141,14 +87,19 @@ export function Navbar() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
-            className="grid h-10 w-10 place-items-center rounded-full text-white/80 hover:bg-white/10"
+            className={cn(
+              "grid h-10 w-10 place-items-center rounded-full transition tv:h-12 tv:w-12",
+              menuOpen
+                ? "bg-white text-ink-950"
+                : "text-white/80 hover:bg-white/10 hover:text-white",
+            )}
           >
             {menuOpen ? <CloseIcon className="text-xl" /> : <MenuIcon className="text-xl" />}
           </button>
         </div>
       </div>
 
-      {/* Search overlay (desktop + mobile) — opens on click */}
+      {/* Search overlay — opens on click */}
       {searchOpen && (
         <div className="container-page pb-3">
           <div className="mx-auto max-w-2xl">
@@ -157,9 +108,9 @@ export function Navbar() {
         </div>
       )}
 
-      {/* Mobile menu */}
+      {/* Categories menu */}
       {menuOpen && (
-        <nav className="container-page grid gap-1 pb-4 lg:hidden">
+        <nav className="container-page grid gap-1 pb-4 sm:grid-cols-2 lg:grid-cols-4">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
