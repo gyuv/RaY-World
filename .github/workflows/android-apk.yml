@@ -1,0 +1,68 @@
+name: Build Android APK (phone + TV)
+
+# Manual trigger: produces the RaY-World WebView-shell APK as a downloadable
+# artifact. GitHub-hosted runners have access to Google's Android hosts, which
+# the Claude Code web sandbox does not.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Build debug APK
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew --no-daemon assembleDebug
+
+      - name: Rename to app-universal.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk app-universal.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-universal-apk
+          path: app-universal.apk
+          if-no-files-found: error
+
+      # Publish to a stable "apk-latest" release so the site's download buttons
+      # resolve to a permanent URL:
+      #   https://github.com/<owner>/<repo>/releases/download/apk-latest/app-universal.apk
+      - name: Publish APK to apk-latest release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-latest
+          name: Latest Android APK (phone + TV)
+          body: |
+            Universal RaY-World Android build (phone/tablet + Android TV Leanback).
+            Unsigned debug APK — enable "Install unknown apps", then open the file.
+            Built from ${{ github.sha }}.
+          files: app-universal.apk
+          make_latest: "false"
