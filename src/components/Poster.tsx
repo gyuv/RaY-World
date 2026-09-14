@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { posterUrl, PosterSize } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +9,18 @@ interface PosterProps {
   className?: string;
   priority?: boolean;
 }
+
+// TMDB poster size buckets (their real pixel widths) used to build a responsive
+// srcSet. Images are served straight from TMDB's CDN (the Vercel optimizer is
+// intentionally off on the free tier), so instead of shipping one fixed w500
+// to every device we let the browser pick the smallest bucket that fits the
+// slot — phones download ~185/342px posters, retina desktops the larger ones.
+const POSTER_SRCSET: { size: PosterSize; w: number }[] = [
+  { size: "w185", w: 185 },
+  { size: "w342", w: 342 },
+  { size: "w500", w: 500 },
+  { size: "w780", w: 780 },
+];
 
 /** Poster image with a branded RaY-World fallback (spec §16). */
 export function Poster({
@@ -39,14 +50,24 @@ export function Poster({
     );
   }
 
+  const srcSet = POSTER_SRCSET.map(
+    ({ size: s, w }) => `${posterUrl(path, s)} ${w}w`,
+  ).join(", ");
+
   return (
-    <Image
+    /* Plain <img> (not next/image): images are unoptimized/TMDB-direct anyway,
+       and a hand-built srcSet gives true responsive downloads without the
+       optimizer. The parent reserves the aspect ratio, so there is no layout
+       shift. */
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
       src={url}
-      alt={alt}
-      fill
+      srcSet={srcSet}
       sizes={sizes}
-      priority={priority}
-      className={cn("object-cover", className)}
+      alt={alt}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      className={cn("absolute inset-0 h-full w-full object-cover", className)}
     />
   );
 }

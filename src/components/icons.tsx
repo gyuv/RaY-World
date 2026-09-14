@@ -22,6 +22,30 @@ export function SearchIcon(props: IconProps) {
   );
 }
 
+/** Enter-fullscreen (four outward corners). */
+export function ExpandIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M8 3H3v5" />
+      <path d="M21 8V3h-5" />
+      <path d="M16 21h5v-5" />
+      <path d="M3 16v5h5" />
+    </svg>
+  );
+}
+
+/** Exit-fullscreen (four inward corners). */
+export function CompressIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3 8h5V3" />
+      <path d="M16 3v5h5" />
+      <path d="M21 16h-5v5" />
+      <path d="M8 21v-5H3" />
+    </svg>
+  );
+}
+
 export function PlayIcon(props: IconProps) {
   return (
     <svg {...base} fill="currentColor" stroke="none" viewBox="0 0 24 24" width="1em" height="1em" {...props}>

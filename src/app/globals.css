@@ -114,12 +114,24 @@ body {
     scroll-padding-bottom: 4rem;
   }
 
+  /* backdrop-filter (live blur of everything behind an element) is the single
+     most expensive effect during scroll on phones and TVs — it is re-filtered
+     every frame the content behind it moves. On coarse-pointer / TV devices
+     drop ALL of it, not just the named panels: the translucent backgrounds
+     stay perfectly legible without the blur. */
+  [class*="backdrop-blur"],
   .glass,
   .card-surface,
   .card-premium,
   .nav-bubble {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+
+  /* The soft animated glow behind the logo re-rasterises a 40px-blurred layer
+     every frame; hold it static on low-power screens. */
+  .logo-pulse {
+    animation: none !important;
   }
 
   .nav-bubble {

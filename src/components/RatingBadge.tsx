@@ -14,7 +14,7 @@ export function RatingBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-md bg-ink-950/80 px-1.5 py-0.5 text-xs font-semibold backdrop-blur",
+        "inline-flex items-center gap-1 rounded-md bg-ink-950/85 px-1.5 py-0.5 text-xs font-semibold",
         classForRating(rating),
         className,
       )}
