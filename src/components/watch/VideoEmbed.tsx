@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal, flushSync } from "react-dom";
 import { StreamSource } from "@/lib/providers/types";
 import {
   PlayIcon,
@@ -146,8 +147,14 @@ export function VideoEmbed({
   // The server list stays hidden behind a toggle so the landing is video-first
   // (no server chips cluttering it); the bar itself is minimal.
   const [showServers, setShowServers] = useState(false);
+  // Only portal on the client. The immersive overlay is rendered into
+  // document.body (see below) so it can never be trapped inside a transformed
+  // ancestor — createPortal needs a real DOM node, which only exists after mount.
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const fsTried = useRef(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (configured.length && !configured.some((s) => s.id === activeId)) {
@@ -168,9 +175,14 @@ export function VideoEmbed({
 
   // Enter the immersive player from a user gesture, and request real browser
   // fullscreen on the same element synchronously so the activation counts.
+  // The overlay lives in a portal, so it isn't in the DOM until React renders —
+  // flushSync forces that render inside the click handler so the fullscreen
+  // request still runs within the user gesture (otherwise browsers reject it).
   const openPlayer = (id?: string) => {
-    if (id) setActiveId(id);
-    setOpen(true);
+    flushSync(() => {
+      if (id) setActiveId(id);
+      setOpen(true);
+    });
     if (containerRef.current) requestFs(containerRef.current);
   };
   const closePlayer = () => {
@@ -245,96 +257,93 @@ export function VideoEmbed({
   const chipActive = "bg-ray-gradient text-ink-950";
   const chipIdle = "bg-white/10 text-white/80 hover:bg-white/20";
 
+  // The immersive, viewport-filling player. Rendered through a portal into
+  // document.body so it is positioned relative to the real viewport — never
+  // relative to a transformed ancestor (the watch page's `animate-fade-in`
+  // wrapper keeps a `transform` under `fill-mode: both`, which would otherwise
+  // trap a `fixed` child inside it, leaving the site header/tab bar on top).
+  const overlay = (
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-[95] h-[100dvh] w-screen overflow-hidden bg-black"
+    >
+      {active ? (
+        <iframe
+          key={active.id}
+          src={getPlayableUrl(active)}
+          title={`${title} — ${active.label}`}
+          allow="autoplay; fullscreen; encrypted-media; picture-in-picture; accelerometer; gyroscope; screen-wake-lock; web-share; clipboard-write"
+          referrerPolicy="no-referrer"
+          allowFullScreen
+          className="h-full w-full border-0"
+        />
+      ) : trailerKey ? (
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
+          title={`${title} — preview`}
+          allow="autoplay; fullscreen; encrypted-media; picture-in-picture; accelerometer; gyroscope; screen-wake-lock; web-share; clipboard-write"
+          referrerPolicy="no-referrer"
+          allowFullScreen
+          className="h-full w-full border-0"
+        />
+      ) : null}
+
+      {/* Minimal top bar: back, title, a Servers toggle, and the fullscreen
+          button. It's pinned to the very top of the viewport and only spans a
+          thin strip so the iframe's own player controls stay reachable below
+          it. `pointer-events-none` on the strip lets taps fall through to the
+          iframe everywhere except the actual buttons. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 pb-8 pt-[max(0.5rem,env(safe-area-inset-top))] sm:px-4">
+        <button onClick={closePlayer} aria-label="Back" className={iconBtn}>
+          <CloseIcon />
+        </button>
+        <span className="pointer-events-auto min-w-0 flex-1 truncate text-sm font-semibold text-white/90">
+          {title}
+        </span>
+        {configured.length > 1 && (
+          <button
+            onClick={() => setShowServers((v) => !v)}
+            aria-expanded={showServers}
+            className="pointer-events-auto rounded-full bg-black/55 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-black/80"
+          >
+            Servers
+          </button>
+        )}
+        <button
+          onClick={toggleFs}
+          aria-label={isFs ? "Exit fullscreen" : "Enter fullscreen"}
+          className={iconBtn}
+        >
+          {isFs ? <CompressIcon /> : <ExpandIcon />}
+        </button>
+      </div>
+
+      {/* Server picker — only when the Servers toggle is on. */}
+      {showServers && configured.length > 1 && (
+        <div className="no-scrollbar pointer-events-auto absolute right-3 top-14 z-30 flex max-w-[80vw] flex-wrap justify-end gap-2 rounded-2xl bg-black/85 p-3 sm:top-16">
+          {configured.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => {
+                setActiveId(s.id);
+                setShowServers(false);
+              }}
+              className={cn(chip, s.id === active?.id ? chipActive : chipIdle)}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div>
-      {/* The player container is always mounted so it can be the fullscreen
-          target from a user gesture. When open it becomes a fixed, viewport-
-          filling overlay (100dvh) that covers the header, footer and page. */}
-      <div
-        ref={containerRef}
-        className={cn(
-          // Exactly one position class per state — never both, or Tailwind's
-          // source order lets `relative` beat `fixed` and the overlay stops
-          // covering the page.
-          "overflow-hidden bg-black",
-          open
-            ? "fixed inset-0 z-[90] h-[100dvh] w-screen rounded-none"
-            : "relative aspect-video w-full rounded-2xl ring-1 ring-white/10",
-        )}
-      >
-        {open && canPlay ? (
-          <>
-            {active ? (
-              <iframe
-                key={active.id}
-                src={getPlayableUrl(active)}
-                title={`${title} — ${active.label}`}
-                allow="autoplay; fullscreen; encrypted-media; picture-in-picture; accelerometer; gyroscope; screen-wake-lock; web-share; clipboard-write"
-                referrerPolicy="no-referrer"
-                allowFullScreen
-                className="h-full w-full border-0"
-              />
-            ) : trailerKey ? (
-              <iframe
-                src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
-                title={`${title} — preview`}
-                allow="autoplay; fullscreen; encrypted-media; picture-in-picture; accelerometer; gyroscope; screen-wake-lock; web-share; clipboard-write"
-                referrerPolicy="no-referrer"
-                allowFullScreen
-                className="h-full w-full border-0"
-              />
-            ) : null}
-
-            {/* Minimal always-on bar: back, title, a Servers toggle, and the
-                fullscreen button. The server LIST stays hidden until asked for,
-                so the landing is just the video — no chips cluttering it. */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-gradient-to-b from-black/60 to-transparent px-3 pb-8 pt-[max(0.5rem,env(safe-area-inset-top))] sm:px-4">
-              <button onClick={closePlayer} aria-label="Back" className={iconBtn}>
-                <CloseIcon />
-              </button>
-              <span className="pointer-events-auto min-w-0 flex-1 truncate text-sm font-semibold text-white/90">
-                {title}
-              </span>
-              {configured.length > 1 && (
-                <button
-                  onClick={() => setShowServers((v) => !v)}
-                  aria-expanded={showServers}
-                  className="pointer-events-auto rounded-full bg-black/55 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-black/80"
-                >
-                  Servers
-                </button>
-              )}
-              <button
-                onClick={toggleFs}
-                aria-label={isFs ? "Exit fullscreen" : "Enter fullscreen"}
-                className={iconBtn}
-              >
-                {isFs ? <CompressIcon /> : <ExpandIcon />}
-              </button>
-            </div>
-
-            {/* Server picker — only when the Servers toggle is on. */}
-            {showServers && configured.length > 1 && (
-              <div className="no-scrollbar pointer-events-auto absolute right-3 top-14 z-30 flex max-w-[80vw] flex-wrap justify-end gap-2 rounded-2xl bg-black/85 p-3 sm:top-16">
-                {configured.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => {
-                      setActiveId(s.id);
-                      setShowServers(false);
-                    }}
-                    className={cn(
-                      chip,
-                      s.id === active?.id ? chipActive : chipIdle,
-                    )}
-                  >
-                    {s.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </>
-        ) : (
+      {/* Inline poster preview — shown only while the immersive player is
+          closed (e.g. a trailer-less page, or after the player is dismissed). */}
+      {!open && (
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black ring-1 ring-white/10">
           <button
             onClick={() => canPlay && openPlayer()}
             disabled={!canPlay}
@@ -357,8 +366,12 @@ export function VideoEmbed({
               <PlayIcon className="text-2xl" />
             </span>
           </button>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Immersive player, portaled to <body> so it fills the true viewport and
+          sits above the site header and tab bar — never boxed inside the page. */}
+      {mounted && open && canPlay && createPortal(overlay, document.body)}
 
       {/* Inline server list — visible only while the immersive player is closed.
           Picking a server here opens the fullscreen player on that server. */}
